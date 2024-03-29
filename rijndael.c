@@ -69,6 +69,8 @@ void shift_rows(unsigned char *block) {
 }
 
 
+//mix columns
+
 void mix_single_column(unsigned char *a) {
     unsigned char t = a[0] ^ a[1] ^ a[2] ^ a[3];
     unsigned char u = a[0];
@@ -79,7 +81,7 @@ void mix_single_column(unsigned char *a) {
 }
 
 void mix_columns(unsigned char *block) {
-  // TODO: Implement me!
+
    unsigned char tempColumn[4];
     for (int i = 0; i < 4; i++) {
         // Extract the column from the block
