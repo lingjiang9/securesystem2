@@ -122,7 +122,7 @@ static const unsigned char inv_s_box[256] = {
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D,
 };
 void invert_sub_bytes(unsigned char *block) {
-  // TODO: Implement me! /tested
+
    for (int i = 0; i < 16; i++) {
         block[i] = inv_s_box[block[i]];
     }
