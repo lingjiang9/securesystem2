@@ -155,6 +155,7 @@ void invert_shift_rows(unsigned char *block) {
     BLOCK_ACCESS(block, 3, 3) = temp;
 }
 
+//invert mix columns
 
 void invert_mix_columns(unsigned char *block) {
     for (int i = 0; i < 4; i++) {
