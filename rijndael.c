@@ -34,7 +34,6 @@
 };
 
 void sub_bytes(unsigned char *block) {
-  // TODO: 
   for (int i = 0; i < 16; i++) {
         block[i] = s_box[block[i]];
     }
