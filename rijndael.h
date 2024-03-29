@@ -1,6 +1,6 @@
 /*
- * TODO: Add your name and student number here, along with
- *       a brief description of this code. Ling Jiang, D22128264
+ * TODO: Ling Jiang, D22128264
+ *       a brief description of this code. 
  */
 
 #ifndef RIJNDAEL_H
@@ -8,6 +8,15 @@
 
 #define BLOCK_ACCESS(block, row, col) (block[(row * 4) + col])
 #define BLOCK_SIZE 16
+#define KEY_SIZE 16
+#define EXPANDED_KEY_SIZE 176
+void sub_bytes(unsigned char *block);
+void invert_sub_bytes(unsigned char *block);
+void shift_rows(unsigned char *block);
+void mix_columns(unsigned char *block);
+void invert_mix_columns(unsigned char *block);
+
+
 
 /*
  * These should be the main encrypt/decrypt functions (i.e. the main
