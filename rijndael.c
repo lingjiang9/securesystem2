@@ -42,9 +42,7 @@ void sub_bytes(unsigned char *block) {
 
 
 void shift_rows(unsigned char *block) {
-  // TODO: Implement me!
   unsigned char temp;
-
     // Shift the second row left by 1
     temp = BLOCK_ACCESS(block, 1, 0);
     for (int col = 0; col < 3; col++) {
