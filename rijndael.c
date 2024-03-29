@@ -129,7 +129,6 @@ void invert_sub_bytes(unsigned char *block) {
 }
 
 void invert_shift_rows(unsigned char *block) {
-  // TODO: Implement me!
   unsigned char temp;
 
     // Inverse shift the second row right by 1 (equivalent to left by 3)
