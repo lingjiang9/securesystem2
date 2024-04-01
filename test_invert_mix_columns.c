@@ -4,7 +4,7 @@
 #define BLOCK_SIZE 16
 #define BLOCK_ACCESS(block, row, col) (block[(row * 4) + col])
 
-// Define xtime, mix_columns, and inv_mix_columns here as you've done previously.
+
 
 void print_block(const char* description, unsigned char *block) {
     printf("%s:\n", description);
