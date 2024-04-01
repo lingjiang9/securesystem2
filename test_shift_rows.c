@@ -3,7 +3,7 @@
 #define BLOCK_ACCESS(block, row, col) (block[(row * 4) + col])
 #define BLOCK_SIZE 16
 
-// Here, you should include or directly paste the implementation of shift_rows
+
 void shift_rows(unsigned char *block);
 
 // Utility function to print the state in a formatted 4x4 block
