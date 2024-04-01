@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "rijndael.h"  // Ensure this is correctly included for the sub_bytes function
+#include "rijndael.h"  
 
 // Function to print the original block in decimal format without any prefix
 void print_original_block(unsigned char *block, int size) {
