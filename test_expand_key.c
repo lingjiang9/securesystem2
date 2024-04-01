@@ -5,7 +5,7 @@
 #define KEY_SIZE 16
 #define EXPANDED_KEY_SIZE 176
 
-// Make sure s_box and r_con are defined and accessible here
+
 extern const unsigned char s_box[256];
 extern const unsigned char r_con[12];
 
