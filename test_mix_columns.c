@@ -1,4 +1,4 @@
-// At the beginning of test_mix_columns.c
+
 #include "rijndael.h"
 
 #include <stdio.h>
