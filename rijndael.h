@@ -10,6 +10,7 @@
 #define BLOCK_SIZE 16
 #define KEY_SIZE 16
 #define EXPANDED_KEY_SIZE 176
+#define AES_ROUNDS 10
 void sub_bytes(unsigned char *block);
 void invert_sub_bytes(unsigned char *block);
 void shift_rows(unsigned char *block);
