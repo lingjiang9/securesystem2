@@ -227,7 +227,8 @@ static const uint8_t Sbox[256] = {
 
 // Round constant (Rcon) array
 static const uint8_t r_con[] = {
-    0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
+       0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40,
+    0x80, 0x1B, 0x36
 };
 
 void KeyExpansionCore(uint8_t* in, uint8_t i) {
@@ -249,10 +250,8 @@ void KeyExpansionCore(uint8_t* in, uint8_t i) {
 }
 
 unsigned char *expand_key(unsigned char *cipher_key) {
-    unsigned char* expandedKeys = (unsigned char*)malloc(AES_EXP_KEY_SIZE);
-    if (!expandedKeys) {
-        return NULL; // Allocation failed
-    }
+    unsigned char expanded_key[176] = {0};
+
 
     int bytesGenerated = 0;
     int rconIteration = 0;

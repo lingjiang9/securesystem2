@@ -20,6 +20,11 @@ class TestBlock(unittest.TestCase):
         self.aes_lib.sub_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte)]
         self.aes_lib.sub_bytes.restype = None
 
+
+        self.aes_lib.expand_key.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_ubyte)]
+        self.aes_lib.expand_key.restype = None
+
+
     # =============================sub_byte test=====================================
     def test_sub_bytes(self):
         """ Test the sub_bytes function in C. """
@@ -159,8 +164,8 @@ class TestBlock(unittest.TestCase):
     def test_expand_key(self):
 
     # Given 128-bit key
-      given_key_hex = "2b7e151628aed2a6abf7158809cf4f3c"
-      given_key = bytes.fromhex(given_key_hex)
+      given_key = b'\x2B\x7E\x15\x16\x28\xAE\xD2\xA6\xAB\xF7\x15\x88\x09\xCF\x4F\x3C'
+      given_key = bytes.fromhex(given_key)
 
     # Expected 176-byte expanded key
       expected_expanded_key_hex = """
