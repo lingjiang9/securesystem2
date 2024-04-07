@@ -13,8 +13,7 @@ class TestBlock(unittest.TestCase):
         # Define the argument and return types for the AES functions
         self.aes_lib.aes_encrypt_block.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_ubyte)]
         self.aes_lib.aes_encrypt_block.restype = None
-        self.aes_lib.aes_decrypt_block.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_ubyte)]
-        self.aes_lib.aes_decrypt_block.restype = None
+     
 
         # define unit test arguments and return types
         self.aes_lib.sub_bytes.argtypes = [ctypes.POINTER(ctypes.c_ubyte)]
