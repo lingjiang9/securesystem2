@@ -1,4 +1,4 @@
-name: Build the project
+name: Build and Test the project
 on: push
 jobs:
   build:
@@ -10,3 +10,6 @@ jobs:
         run: |
           sudo apt install -y build-essential python-is-python3
           make
+      - name: Run tests
+        run: pytest
+     
