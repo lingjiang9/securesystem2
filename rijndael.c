@@ -426,21 +426,20 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   inverse_sub_bytes(output);
 
   //  step6 10 main rounds
-  //   for (int round = 9; round >= 0; --round) {
-  //     add_round_key();
-  //     inverse_mix_columns(output);
-  //     inverse_shift_rows(output);
-  //     inverse_sub_bytes(output);
+  for (int round = 9; round >= 1; --round) {
+    add_round_key(output, expandedKey + (round * BLOCK_SIZE));
+    inverse_mix_columns(output);
+    inverse_shift_rows(output);
+    inverse_sub_bytes(output);
+  }
+  add_round_key(output,
+                key);  // add the initial key
 
-  //     add_round_key(output,
-  //                   key);  // add the initial key
-  //   }
-
-  //   // debuggggg
-  //   printf("This is the result after 9 main inverse rounds: ");
-  //   for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //     printf("%02x ", output[i]);
-  //   }
+  // debuggggg
+  printf("This is the result after 10 main inverse rounds: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
 
   return output;
 }

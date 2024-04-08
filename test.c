@@ -386,46 +386,41 @@ int main() {
     printf("Test Case 14 first round of decryption Failed.\n");
   }
 
-  //++++++++++++++++test case 13: 10 main inverse round test+++++++++++++
-  //   unsigned char ciphertext13[16] = {235, 64,  242, 30,  89, 46,  56, 132,
-  //                                     139, 161, 19,  231, 27, 195, 66, 210};
+  //++++++++++++++++test case 15: 10 main inverse round test+++++++++++++
+  unsigned char ciphertext15[16] = {235, 64,  242, 30,  89, 46,  56, 132,
+                                    139, 161, 19,  231, 27, 195, 66, 210};
 
-  //   unsigned char expected_ciphertext13[16] = {
-  //       25, 61, 227, 190, 160, 244, 226, 43, 154, 198, 141, 42, 233, 248, 72,
-  //       8};
-  //   for (int round = 9; round >= 1; --round) {
-  //     add_round_key(ciphertext13, expandedKey + (round * BLOCK_SIZE));
+  unsigned char expected_plaintext15[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+                                            49, 49, 152, 162, 224, 55, 7,  52};
+  for (int round = 9; round >= 1; --round) {
+    add_round_key(ciphertext15, expandedKey + (round * BLOCK_SIZE));
 
-  //     inverse_mix_columns(ciphertext13);
-  //     printf("inverse mix columns:\n");
-  //     print_block(ciphertext13, 16);
+    inverse_mix_columns(ciphertext15);
+    printf("inverse mix columns:\n");
+    print_block(ciphertext15, 16);
 
-  //     inverse_sub_bytes(ciphertext13);
-  //     printf("inverse sub_bytes:\n");
-  //     print_block(ciphertext13, 16);
+    inverse_shift_rows(ciphertext15);
+    printf("inverse shift rows:\n");
+    print_block(ciphertext15, 16);
 
-  //     inverse_shift_rows(ciphertext13);
-  //     printf("inverse shift rows:\n");
-  //     print_block(ciphertext13, 16);
+    inverse_sub_bytes(ciphertext15);
+    printf("inverse sub_bytes:\n");
+    print_block(ciphertext15, 16);
+  }
 
-  //     add_round_key(ciphertext13, expandedKey);
-  //     printf("add last round key:\n");
-  //     print_block(ciphertext13, 16);
-  //   }
+  add_round_key(ciphertext15, round_key);
 
-  //   printf("After 9 main rounds:\n");
-  //   print_block(ciphertext13, 16);
-  //   printf("After 9 main rounds expected output:\n");
-  //   print_block(expected_ciphertext13, 16);
+  printf("After 10 main rounds:\n");
+  print_block(ciphertext15, 16);
+  printf("After 10 main rounds expected output:\n");
+  print_block(expected_plaintext15, 16);
 
-  //   // Compare the generated ciphertext with the expected ciphertext
-  //   if (memcmp(ciphertext13, expected_ciphertext13, BLOCK_SIZE) == 0) {
-  //     printf(
-  //         "Test case 13: 9 main inverse rounds Passed "
-  //         "ciphertext.\n");
-  //   } else {
-  //     printf("Test case 13 main inverse rounds Failed.\n");
-  //   }
+  // Compare the generated ciphertext with the expected ciphertext
+  if (memcmp(ciphertext15, expected_plaintext15, BLOCK_SIZE) == 0) {
+    printf("Test case 15: 10 main inverse rounds Passed. \n");
+  } else {
+    printf("Test case 15: 10 main inverse rounds Failed.\n");
+  }
 
   return 0;
 };
