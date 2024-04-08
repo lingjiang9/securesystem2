@@ -139,37 +139,32 @@ int main() {
   }
 
   // +++++++++++++Test Case 5: add round key++++++++++++
-  // Declare the function prototype
-  //   void add_round_key(unsigned char *block, const unsigned char
-  //   *round_key); unsigned char test_block5[16] = {50, 67, 246, 168, 136,
-  //   90, 48, 141,
-  //                                    49, 49, 152, 162, 224, 55, 7,  52};
-  //   unsigned char round_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
-  //                                  171, 247, 21, 136, 9,  207, 79,  60};
-  //   unsigned char expected_output5[16] = {25,  61,  227, 190, 160, 244,
-  //   226, 43,
-  //                                         154, 198, 141, 42,  233, 248,
-  //                                         72, 8};
-  //   printf("Before add round key:\n");
-  //   print_block(test_block5, 16);
 
-  //   add_round_key(test_block5, round_key);
-  //   print_block(round_key, 16);
+  unsigned char test_block5[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+                                   49, 49, 152, 162, 224, 55, 7,  52};
+  unsigned char round_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
+                                 171, 247, 21, 136, 9,  207, 79,  60};
+  unsigned char expected_output5[16] = {25,  61,  227, 190, 160, 244, 226, 43,
+                                        154, 198, 141, 42,  233, 248, 72,  8};
+  printf("Before add round key:\n");
+  print_block(test_block5, 16);
 
-  //   printf("After add round key:\n");
-  //   print_block(test_block5, 16);
+  add_round_key(test_block5, round_key);
+  print_block(round_key, 16);
 
-  //   printf("Expected output:\n");
-  //   print_block(expected_output5, 16);
+  printf("After add round key:\n");
+  print_block(test_block5, 16);
 
-  //   if (memcmp(test_block5, expected_output5, 16) == 0) {
-  //     printf("Test Case 5 Passed: The output matches the expected
-  //     output.\n");
-  //   } else {
-  //     printf(
-  //         "Test Case 5 add round key Failed:The output does not match the
-  //         " "expected " "output.\n");
-  //   }
+  printf("Expected output:\n");
+  print_block(expected_output5, 16);
+
+  if (memcmp(test_block5, expected_output5, 16) == 0) {
+    printf("Test Case 5 Passed: The output matches the expected output.\n");
+  } else {
+    printf(
+        "Test Case 5 add round key Failed: The output does not match the "
+        "expected output.\n");
+  }
 
   // +++++++++++++Test Case 6: encrypt block ++++++++++++
   //   unsigned char plaintext[BLOCK_SIZE] = {50, 67, 246, 168, 136, 90, 48,
