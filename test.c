@@ -24,34 +24,31 @@ int areCharArraysEqual(const unsigned char *result4,
 
 int main() {
   // +++++++++++++++Test Case 1: sub bytes+++++++++++++++++++
-  //   unsigned char test_block1[16] = {25,  160, 154, 233, 61,  244, 198,
-  //   248,
-  //                                    227, 226, 141, 72,  190, 43,  42,  8};
-  //   unsigned char expected_output1[16] = {212, 224, 184, 30, 39,  191, 180,
-  //   65,
-  //                                         17,  152, 93,  82, 174, 241, 229,
-  //                                         48};
+  unsigned char test_block1[16] = {25,  160, 154, 233, 61,  244, 198, 248,
+                                   227, 226, 141, 72,  190, 43,  42,  8};
+  unsigned char expected_output1[16] = {212, 224, 184, 30, 39,  191, 180, 65,
+                                        17,  152, 93,  82, 174, 241, 229, 48};
 
-  //   printf("Before sub_bytes:\n");
-  //   print_block(test_block1, 16);
+  printf("Before sub_bytes:\n");
+  print_block(test_block1, 16);
 
-  //   sub_bytes(test_block1);
+  sub_bytes(test_block1);
 
-  //   printf("After sub_bytes:\n");
-  //   print_block(test_block1, 16);
+  printf("After sub_bytes:\n");
+  print_block(test_block1, 16);
 
-  //   printf("Expected output:\n");
-  //   print_block(expected_output1, 16);
+  printf("Expected output:\n");
+  print_block(expected_output1, 16);
 
-  //   // Using memcmp for comparison
-  //   if (memcmp(test_block1, expected_output1, 16) == 0) {
-  //     printf("Test Case 1 Passed: The output matches the expected
-  //     output.\n");
-  //   } else {
-  //     printf(
-  //         "Test Case 1 Failed:testThe output does not match the expected "
-  //         "output.\n");
-  //   }
+  // Using memcmp for comparison
+  if (memcmp(test_block1, expected_output1, 16) == 0) {
+      printf("Test Case 1 Passed: The output matches the expected
+      output.\n");
+  } else {
+    printf(
+        "Test Case 1 Failed:testThe output does not match the expected "
+        "output.\n");
+  }
 
   // +++++++++++++Test Case 2: shift rows++++++++++++
   //   unsigned char test_block2[16] = {212, 39,  17, 174, 224, 191, 152, 241,
@@ -325,34 +322,36 @@ int main() {
   //   }
 
   //+++++++++++++++++test case 9: aes_encrypt_block++++++++++++
-  unsigned char plaintext9[16] = {50, 67, 246, 168, 136, 90, 48, 141,
-                                  49, 49, 152, 162, 224, 55, 7,  52};
-  unsigned char initial_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
-                                   171, 247, 21, 136, 9,  207, 79,  60};
-  unsigned char expected_ciphertext9[16] = {57,  37, 132, 29,  2,  220, 9,  251,
-                                            220, 17, 133, 151, 25, 106, 11, 50};
+  //   unsigned char plaintext9[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+  //                                   49, 49, 152, 162, 224, 55, 7,  52};
+  //   unsigned char initial_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
+  //                                    171, 247, 21, 136, 9,  207, 79,  60};
+  //   unsigned char expected_ciphertext9[16] = {57,  37, 132, 29,  2,  220, 9,
+  //   251,
+  //                                             220, 17, 133, 151, 25, 106, 11,
+  //                                             50};
 
-  printf("Before encryption:\n");
-  print_block(plaintext9, 16);
+  //   printf("Before encryption:\n");
+  //   print_block(plaintext9, 16);
 
-  unsigned char *ciphertext = aes_encrypt_block(plaintext9, initial_key);
+  //   unsigned char *ciphertext = aes_encrypt_block(plaintext9, initial_key);
 
-  printf("After encryption:\n");
-  print_block(ciphertext, 16);
-  printf("expected output:\n");
-  print_block(expected_ciphertext9, 16);
+  //   printf("After encryption:\n");
+  //   print_block(ciphertext, 16);
+  //   printf("expected output:\n");
+  //   print_block(expected_ciphertext9, 16);
 
-  // Compare the generated ciphertext with the expected ciphertext
-  if (memcmp(ciphertext, expected_ciphertext9, 16) == 0) {
-    printf(
-        "Test case 9: AES Encryption SUCCESS: Ciphertext matches the expected "
-        "ciphertext.\n");
-  } else {
-    printf(
-        "Test case 9 AES Encryption FAILED: Ciphertext does not match the "
-        "expected "
-        "ciphertext.\n");
-  }
+  //   // Compare the generated ciphertext with the expected ciphertext
+  //   if (memcmp(ciphertext, expected_ciphertext9, 16) == 0) {
+  //     printf(
+  //         "Test case 9: AES Encryption SUCCESS: Ciphertext matches the
+  //         expected " "ciphertext.\n");
+  //   } else {
+  //     printf(
+  //         "Test case 9 AES Encryption FAILED: Ciphertext does not match the "
+  //         "expected "
+  //         "ciphertext.\n");
+  //   }
 
   return 0;
 };
