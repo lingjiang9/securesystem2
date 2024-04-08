@@ -301,6 +301,11 @@ void inverse_mix_columns(unsigned char *block) {
  * The implementations of the functions declared in the
  * header file should go here
  */
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++                  AES ENCRYPTION                      +++
+// +++                                                      +++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
   // step1: Expand the key
   unsigned char *expandedKey = expand_key(key);
@@ -372,11 +377,70 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
   free(expandedKey);  // Free the dynamically allocated expandedKey
   return output;
 }
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++                  AES DECRYPTION                      +++
+// +++                                                      +++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+unsigned char *aes_decrypt_block(unsigned char *ciphertext,
+                                 unsigned char *key) {
+  // step1: Expand the key
+  unsigned char *expandedKey = expand_key(key);
+  // debuggggggggggggggg
+  for (int i = 0; i < EXPANDED_KEY_SIZE; ++i) {
+    printf("%02x ", expandedKey[i]);
+  }
+  printf("\n");
+  if (!expandedKey) {
+    printf("Failed to expand key.\n");
+    return NULL;
+  }
+  // step2: Allocate memory for the output block (plaintext)
+  unsigned char *output =
+      (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
+  if (!output) {
+    printf("Failed to allocate memory for output block.\n");
+    return NULL;
+  }
+  // step3 add last round key
+  memcpy(output, ciphertext, BLOCK_SIZE);
+  // debugggg
+  printf("This is output after copy ciphertext: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
+  add_round_key(output, expandedKey + 10 * BLOCK_SIZE);
+  // debugggg
 
-// unsigned char *aes_decrypt_block(unsigned char *ciphertext,
-//                                  unsigned char *key) {
-//   // TODO: Implement me!
-//   unsigned char *output =
-//       (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
-//   return expanded_key;
-// }
+  printf("This is last round key: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", expandedKey[i]);
+  }
+  printf("This is output after add last round key: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
+  // step4 inverse shift rows
+  inverse_shift_rows(output);
+
+  // step5 inverse sub bytes
+  inverse_sub_bytes(output);
+
+  //  step6 10 main rounds
+  //   for (int round = 9; round >= 0; --round) {
+  //     add_round_key();
+  //     inverse_mix_columns(output);
+  //     inverse_shift_rows(output);
+  //     inverse_sub_bytes(output);
+
+  //     add_round_key(output,
+  //                   key);  // add the initial key
+  //   }
+
+  //   // debuggggg
+  //   printf("This is the result after 9 main inverse rounds: ");
+  //   for (int i = 0; i < BLOCK_SIZE; ++i) {
+  //     printf("%02x ", output[i]);
+  //   }
+
+  return output;
+}

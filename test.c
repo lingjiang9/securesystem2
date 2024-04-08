@@ -166,7 +166,7 @@ int main() {
         "expected output.\n");
   }
 
-  //++++++++++++++++test case 7: main round test+++++++++++++
+  //++++++++++++++++test case 7: 9 main round test+++++++++++++
   unsigned char plaintext[16] = {25,  61,  227, 190, 160, 244, 226, 43,
                                  154, 198, 141, 42,  233, 248, 72,  8};
   unsigned char expandedKey[176] = {
@@ -359,6 +359,73 @@ int main() {
   } else {
     printf("Test Case 12 inverse mix columns Failed.\n");
   }
+
+  //++++++++++++++++++test case 14: first round decyption
+  // test++++++++++++++++++++
+  unsigned char test_block14[16] = {57,  37, 132, 29,  2,  220, 9,  251,
+                                    220, 17, 133, 151, 25, 106, 11, 50};
+
+  unsigned char expected_output14[16] = {235, 64,  242, 30,  89, 46,  56, 132,
+                                         139, 161, 19,  231, 27, 195, 66, 210};
+  printf("Before add last round key:\n");
+  print_block(test_block14, 16);
+
+  add_round_key(test_block14, expandedKey + 10 * BLOCK_SIZE);
+  inverse_shift_rows(test_block14);
+  inverse_sub_bytes(test_block14);
+
+  printf("After 1 round :\n");
+  print_block(test_block14, 16);
+
+  printf("Expected output:\n");
+  print_block(expected_output14, 16);
+
+  if (memcmp(test_block14, expected_output14, 16) == 0) {
+    printf("Test Case 14 first round of decryption Passed.\n");
+  } else {
+    printf("Test Case 14 first round of decryption Failed.\n");
+  }
+
+  //++++++++++++++++test case 13: 10 main inverse round test+++++++++++++
+  //   unsigned char ciphertext13[16] = {235, 64,  242, 30,  89, 46,  56, 132,
+  //                                     139, 161, 19,  231, 27, 195, 66, 210};
+
+  //   unsigned char expected_ciphertext13[16] = {
+  //       25, 61, 227, 190, 160, 244, 226, 43, 154, 198, 141, 42, 233, 248, 72,
+  //       8};
+  //   for (int round = 9; round >= 1; --round) {
+  //     add_round_key(ciphertext13, expandedKey + (round * BLOCK_SIZE));
+
+  //     inverse_mix_columns(ciphertext13);
+  //     printf("inverse mix columns:\n");
+  //     print_block(ciphertext13, 16);
+
+  //     inverse_sub_bytes(ciphertext13);
+  //     printf("inverse sub_bytes:\n");
+  //     print_block(ciphertext13, 16);
+
+  //     inverse_shift_rows(ciphertext13);
+  //     printf("inverse shift rows:\n");
+  //     print_block(ciphertext13, 16);
+
+  //     add_round_key(ciphertext13, expandedKey);
+  //     printf("add last round key:\n");
+  //     print_block(ciphertext13, 16);
+  //   }
+
+  //   printf("After 9 main rounds:\n");
+  //   print_block(ciphertext13, 16);
+  //   printf("After 9 main rounds expected output:\n");
+  //   print_block(expected_ciphertext13, 16);
+
+  //   // Compare the generated ciphertext with the expected ciphertext
+  //   if (memcmp(ciphertext13, expected_ciphertext13, BLOCK_SIZE) == 0) {
+  //     printf(
+  //         "Test case 13: 9 main inverse rounds Passed "
+  //         "ciphertext.\n");
+  //   } else {
+  //     printf("Test case 13 main inverse rounds Failed.\n");
+  //   }
 
   return 0;
 };
