@@ -8,7 +8,6 @@
 // TODO: Any other files you need to include should go here
 
 #include "rijndael.h"
-#define xtime(a) (((a) & 0x80) ? (((a) << 1) ^ 0x1B) & 0xFF : ((a) << 1))
 
 /*
  * Operations used when encrypting a block
@@ -58,56 +57,56 @@ void sub_bytes(unsigned char *block) {
 
 void shift_rows(unsigned char *block) {
   unsigned char temp;
+
   // Shift the second row left by 1
-  temp = BLOCK_ACCESS(block, 1, 0);
-  for (int col = 0; col < 3; col++) {
-    BLOCK_ACCESS(block, 1, col) = BLOCK_ACCESS(block, 1, col + 1);
-  }
-  BLOCK_ACCESS(block, 1, 3) = temp;
+  temp = block[5];
+  block[5] = block[9];
+  block[9] = block[13];
+  block[13] = block[1];
+  block[1] = temp;
 
   // Shift the third row left by 2
-  for (int i = 0; i < 2; i++) {  // Repeat shifting by 1, twice
-    temp = BLOCK_ACCESS(block, 2, 0);
-    for (int col = 0; col < 3; col++) {
-      BLOCK_ACCESS(block, 2, col) = BLOCK_ACCESS(block, 2, col + 1);
-    }
-    BLOCK_ACCESS(block, 2, 3) = temp;
-  }
+  temp = block[2];
+  block[2] = block[10];
+  block[10] = temp;
+
+  temp = block[6];
+  block[6] = block[14];
+  block[14] = temp;
 
   // Shift the fourth row left by 3 (or equivalently, right by 1)
-  temp = BLOCK_ACCESS(block, 3, 3);
-  for (int col = 3; col > 0; col--) {
-    BLOCK_ACCESS(block, 3, col) = BLOCK_ACCESS(block, 3, col - 1);
-  }
-  BLOCK_ACCESS(block, 3, 0) = temp;
+  temp = block[15];
+  block[15] = block[11];
+  block[11] = block[7];
+  block[7] = block[3];
+  block[3] = temp;
 }
 
 // mix columns
 
-void mix_single_column(unsigned char *a) {
-  unsigned char t = a[0] ^ a[1] ^ a[2] ^ a[3];
-  unsigned char u = a[0];
-  a[0] ^= t ^ xtime(a[0] ^ a[1]);
-  a[1] ^= t ^ xtime(a[1] ^ a[2]);
-  a[2] ^= t ^ xtime(a[2] ^ a[3]);
-  a[3] ^= t ^ xtime(a[3] ^ u);
-}
+#define xtime(x) (((x) << 1) ^ ((((x) >> 7) & 1) * 0x1b))
+#define multiply(x, y)                           \
+  (((y) & 1) * (x) ^ ((y >> 1) & 1) * xtime(x) ^ \
+   ((y >> 2) & 1) * xtime(xtime(x)) ^ ((y >> 3) & 1) * xtime(xtime(xtime(x))))
 
 void mix_columns(unsigned char *block) {
-  unsigned char tempColumn[4];
-  for (int i = 0; i < 4; i++) {
-    // Extract the column from the block
-    for (int j = 0; j < 4; j++) {
-      tempColumn[j] = BLOCK_ACCESS(block, j, i);
-    }
+  unsigned char temp[4];
+  int i;
 
-    // Mix it
-    mix_single_column(tempColumn);
+  for (i = 0; i < 4; ++i) {
+    temp[0] = multiply(block[i * 4], 2) ^ multiply(block[i * 4 + 1], 3) ^
+              block[i * 4 + 2] ^ block[i * 4 + 3];
+    temp[1] = block[i * 4] ^ multiply(block[i * 4 + 1], 2) ^
+              multiply(block[i * 4 + 2], 3) ^ block[i * 4 + 3];
+    temp[2] = block[i * 4] ^ block[i * 4 + 1] ^ multiply(block[i * 4 + 2], 2) ^
+              multiply(block[i * 4 + 3], 3);
+    temp[3] = multiply(block[i * 4], 3) ^ block[i * 4 + 1] ^ block[i * 4 + 2] ^
+              multiply(block[i * 4 + 3], 2);
 
-    // Put the mixed column back into the block
-    for (int j = 0; j < 4; j++) {
-      BLOCK_ACCESS(block, j, i) = tempColumn[j];
-    }
+    block[i * 4] = temp[0];
+    block[i * 4 + 1] = temp[1];
+    block[i * 4 + 2] = temp[2];
+    block[i * 4 + 3] = temp[3];
   }
 }
 
@@ -115,85 +114,84 @@ void mix_columns(unsigned char *block) {
  * Operations used when decrypting a block
  */
 
-static const unsigned char inv_s_box[256] = {
-    0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E,
-    0x81, 0xF3, 0xD7, 0xFB, 0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87,
-    0x34, 0x8E, 0x43, 0x44, 0xC4, 0xDE, 0xE9, 0xCB, 0x54, 0x7B, 0x94, 0x32,
-    0xA6, 0xC2, 0x23, 0x3D, 0xEE, 0x4C, 0x95, 0x0B, 0x42, 0xFA, 0xC3, 0x4E,
-    0x08, 0x2E, 0xA1, 0x66, 0x28, 0xD9, 0x24, 0xB2, 0x76, 0x5B, 0xA2, 0x49,
-    0x6D, 0x8B, 0xD1, 0x25, 0x72, 0xF8, 0xF6, 0x64, 0x86, 0x68, 0x98, 0x16,
-    0xD4, 0xA4, 0x5C, 0xCC, 0x5D, 0x65, 0xB6, 0x92, 0x6C, 0x70, 0x48, 0x50,
-    0xFD, 0xED, 0xB9, 0xDA, 0x5E, 0x15, 0x46, 0x57, 0xA7, 0x8D, 0x9D, 0x84,
-    0x90, 0xD8, 0xAB, 0x00, 0x8C, 0xBC, 0xD3, 0x0A, 0xF7, 0xE4, 0x58, 0x05,
-    0xB8, 0xB3, 0x45, 0x06, 0xD0, 0x2C, 0x1E, 0x8F, 0xCA, 0x3F, 0x0F, 0x02,
-    0xC1, 0xAF, 0xBD, 0x03, 0x01, 0x13, 0x8A, 0x6B, 0x3A, 0x91, 0x11, 0x41,
-    0x4F, 0x67, 0xDC, 0xEA, 0x97, 0xF2, 0xCF, 0xCE, 0xF0, 0xB4, 0xE6, 0x73,
-    0x96, 0xAC, 0x74, 0x22, 0xE7, 0xAD, 0x35, 0x85, 0xE2, 0xF9, 0x37, 0xE8,
-    0x1C, 0x75, 0xDF, 0x6E, 0x47, 0xF1, 0x1A, 0x71, 0x1D, 0x29, 0xC5, 0x89,
-    0x6F, 0xB7, 0x62, 0x0E, 0xAA, 0x18, 0xBE, 0x1B, 0xFC, 0x56, 0x3E, 0x4B,
-    0xC6, 0xD2, 0x79, 0x20, 0x9A, 0xDB, 0xC0, 0xFE, 0x78, 0xCD, 0x5A, 0xF4,
-    0x1F, 0xDD, 0xA8, 0x33, 0x88, 0x07, 0xC7, 0x31, 0xB1, 0x12, 0x10, 0x59,
-    0x27, 0x80, 0xEC, 0x5F, 0x60, 0x51, 0x7F, 0xA9, 0x19, 0xB5, 0x4A, 0x0D,
-    0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF, 0xA0, 0xE0, 0x3B, 0x4D,
-    0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
-    0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63,
-    0x55, 0x21, 0x0C, 0x7D,
-};
-void invert_sub_bytes(unsigned char *block) {
-  for (int i = 0; i < 16; i++) {
-    block[i] = inv_s_box[block[i]];
-  }
-}
+// static const unsigned char inv_s_box[256] = {
+//     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E,
+//     0x81, 0xF3, 0xD7, 0xFB, 0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87,
+//     0x34, 0x8E, 0x43, 0x44, 0xC4, 0xDE, 0xE9, 0xCB, 0x54, 0x7B, 0x94, 0x32,
+//     0xA6, 0xC2, 0x23, 0x3D, 0xEE, 0x4C, 0x95, 0x0B, 0x42, 0xFA, 0xC3, 0x4E,
+//     0x08, 0x2E, 0xA1, 0x66, 0x28, 0xD9, 0x24, 0xB2, 0x76, 0x5B, 0xA2, 0x49,
+//     0x6D, 0x8B, 0xD1, 0x25, 0x72, 0xF8, 0xF6, 0x64, 0x86, 0x68, 0x98, 0x16,
+//     0xD4, 0xA4, 0x5C, 0xCC, 0x5D, 0x65, 0xB6, 0x92, 0x6C, 0x70, 0x48, 0x50,
+//     0xFD, 0xED, 0xB9, 0xDA, 0x5E, 0x15, 0x46, 0x57, 0xA7, 0x8D, 0x9D, 0x84,
+//     0x90, 0xD8, 0xAB, 0x00, 0x8C, 0xBC, 0xD3, 0x0A, 0xF7, 0xE4, 0x58, 0x05,
+//     0xB8, 0xB3, 0x45, 0x06, 0xD0, 0x2C, 0x1E, 0x8F, 0xCA, 0x3F, 0x0F, 0x02,
+//     0xC1, 0xAF, 0xBD, 0x03, 0x01, 0x13, 0x8A, 0x6B, 0x3A, 0x91, 0x11, 0x41,
+//     0x4F, 0x67, 0xDC, 0xEA, 0x97, 0xF2, 0xCF, 0xCE, 0xF0, 0xB4, 0xE6, 0x73,
+//     0x96, 0xAC, 0x74, 0x22, 0xE7, 0xAD, 0x35, 0x85, 0xE2, 0xF9, 0x37, 0xE8,
+//     0x1C, 0x75, 0xDF, 0x6E, 0x47, 0xF1, 0x1A, 0x71, 0x1D, 0x29, 0xC5, 0x89,
+//     0x6F, 0xB7, 0x62, 0x0E, 0xAA, 0x18, 0xBE, 0x1B, 0xFC, 0x56, 0x3E, 0x4B,
+//     0xC6, 0xD2, 0x79, 0x20, 0x9A, 0xDB, 0xC0, 0xFE, 0x78, 0xCD, 0x5A, 0xF4,
+//     0x1F, 0xDD, 0xA8, 0x33, 0x88, 0x07, 0xC7, 0x31, 0xB1, 0x12, 0x10, 0x59,
+//     0x27, 0x80, 0xEC, 0x5F, 0x60, 0x51, 0x7F, 0xA9, 0x19, 0xB5, 0x4A, 0x0D,
+//     0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF, 0xA0, 0xE0, 0x3B, 0x4D,
+//     0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
+//     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63,
+//     0x55, 0x21, 0x0C, 0x7D,
+// };
+// void invert_sub_bytes(unsigned char *block) {
+//   for (int i = 0; i < 16; i++) {
+//     block[i] = inv_s_box[block[i]];
+//   }
+// }
 
-void invert_shift_rows(unsigned char *block) {
-  unsigned char temp;
+// void invert_shift_rows(unsigned char *block) {
+//   unsigned char temp;
 
-  // Inverse shift the second row right by 1 (equivalent to left by 3)
-  temp = BLOCK_ACCESS(block, 3, 1);
-  for (int col = 3; col > 0; col--) {
-    BLOCK_ACCESS(block, col, 1) = BLOCK_ACCESS(block, col - 1, 1);
-  }
-  BLOCK_ACCESS(block, 0, 1) = temp;
+// Inverse shift the second row right by 1 (equivalent to left by 3)
+//   temp = BLOCK_ACCESS(block, 3, 1);
+//   for (int col = 3; col > 0; col--) {
+//     BLOCK_ACCESS(block, col, 1) = BLOCK_ACCESS(block, col - 1, 1);
+//   }
+//   BLOCK_ACCESS(block, 0, 1) = temp;
 
-  // Inverse shift the third row right by 2 (equivalent to left by 2)
-  // We can do this in two steps or directly swap the positions
-  temp = BLOCK_ACCESS(block, 2, 2);
-  BLOCK_ACCESS(block, 2, 2) = BLOCK_ACCESS(block, 0, 2);
-  BLOCK_ACCESS(block, 0, 2) = temp;
-  temp = BLOCK_ACCESS(block, 3, 2);
-  BLOCK_ACCESS(block, 3, 2) = BLOCK_ACCESS(block, 1, 2);
-  BLOCK_ACCESS(block, 1, 2) = temp;
+// Inverse shift the third row right by 2 (equivalent to left by 2)
+// We can do this in two steps or directly swap the positions
+//   temp = BLOCK_ACCESS(block, 2, 2);
+//   BLOCK_ACCESS(block, 2, 2) = BLOCK_ACCESS(block, 0, 2);
+//   BLOCK_ACCESS(block, 0, 2) = temp;
+//   temp = BLOCK_ACCESS(block, 3, 2);
+//   BLOCK_ACCESS(block, 3, 2) = BLOCK_ACCESS(block, 1, 2);
+//   BLOCK_ACCESS(block, 1, 2) = temp;
 
-  // Inverse shift the fourth row right by 3 (equivalent to left by 1)
-  temp = BLOCK_ACCESS(block, 0, 3);
-  for (int col = 0; col < 3; col++) {
-    BLOCK_ACCESS(block, col, 3) = BLOCK_ACCESS(block, col + 1, 3);
-  }
-  BLOCK_ACCESS(block, 3, 3) = temp;
-}
+// Inverse shift the fourth row right by 3 (equivalent to left by 1)
+//   temp = BLOCK_ACCESS(block, 0, 3);
+//   for (int col = 0; col < 3; col++) {
+//     BLOCK_ACCESS(block, col, 3) = BLOCK_ACCESS(block, col + 1, 3);
+//   }
+//   BLOCK_ACCESS(block, 3, 3) = temp;
+// }
 
 // invert mix columns
 
-void invert_mix_columns(unsigned char *block) {
-  for (int i = 0; i < 4; i++) {
-    unsigned char u =
-        xtime(xtime(BLOCK_ACCESS(block, 0, i) ^ BLOCK_ACCESS(block, 2, i)));
-    unsigned char v =
-        xtime(xtime(BLOCK_ACCESS(block, 1, i) ^ BLOCK_ACCESS(block, 3, i)));
-    BLOCK_ACCESS(block, 0, i) ^= u;
-    BLOCK_ACCESS(block, 1, i) ^= v;
-    BLOCK_ACCESS(block, 2, i) ^= u;
-    BLOCK_ACCESS(block, 3, i) ^= v;
-  }
+// void invert_mix_columns(unsigned char *block) {
+//   for (int i = 0; i < 4; i++) {
+//     unsigned char u =
+//         xtime(xtime(BLOCK_ACCESS(block, 0, i) ^ BLOCK_ACCESS(block, 2, i)));
+//     unsigned char v =
+//         xtime(xtime(BLOCK_ACCESS(block, 1, i) ^ BLOCK_ACCESS(block, 3, i)));
+//     BLOCK_ACCESS(block, 0, i) ^= u;
+//     BLOCK_ACCESS(block, 1, i) ^= v;
+//     BLOCK_ACCESS(block, 2, i) ^= u;
+//     BLOCK_ACCESS(block, 3, i) ^= v;
+//   }
 
-  mix_columns(block);  // forward mix_columns to complete the inversion
-}
+//   mix_columns(block);  // forward mix_columns to complete the inversion
+// }
 
 /*
  * This operation is shared between encryption and decryption
  */
 void add_round_key(unsigned char *block, unsigned char *round_key) {
-  // not tested yet
   for (int i = 0; i < BLOCK_SIZE; i++) {
     block[i] ^= round_key[i];
   }
@@ -237,7 +235,7 @@ unsigned char *expand_key(unsigned char *cipher_key) {
 
     if (i % AES_KEY_SIZE == 0) {
       // Rotate the temp array
-      printf("MOD 16");
+      //   printf("MOD 16");
       unsigned char t = temp[0];
       temp[0] = temp[1];
       temp[1] = temp[2];
@@ -256,16 +254,16 @@ unsigned char *expand_key(unsigned char *cipher_key) {
       for (int j = 0; j < 4; j++) {
         // XOR temp with the 16-byte block i bytes ago
         expanded_key[i] = temp[j] ^ temp2[j];
-        printf("This is end, %d: ", i);
-        printf("%d\n", expanded_key[i]);
+        // printf("This is end, %d: ", i);
+        // printf("%d\n", expanded_key[i]);
         i++;
       }
     } else {
       //   XOR temp with the 16-byte block i bytes ago
       for (int j = 0; j < 4; j++) {
         expanded_key[i] = temp[j] ^ temp2[j];
-        printf("This is end, %d: ", i);
-        printf("%d\n", expanded_key[i]);
+        // printf("This is end, %d: ", i);
+        // printf("%d\n", expanded_key[i]);
         i++;
       }
     }
@@ -279,28 +277,47 @@ unsigned char *expand_key(unsigned char *cipher_key) {
  * header file should go here
  */
 unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
-  // Expand the key first
+  // step1: Expand the key
   unsigned char *expandedKey = expand_key(key);
+  // debuggggggggggggggg
+  for (int i = 0; i < EXPANDED_KEY_SIZE; ++i) {
+    printf("%02x ", expandedKey[i]);
+  }
+  printf("\n");
   if (!expandedKey) {
     printf("Failed to expand key.\n");
     return NULL;
   }
 
-  // Allocate memory for the output block (ciphertext)
+  // step2: Allocate memory for the output block (ciphertext)
   unsigned char *output =
       (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
   if (!output) {
-    free(expandedKey);  // Corrected: free the expandedKey here if output
-                        // allocation fails
+    free(expandedKey);  // Free the dynamically allocated expandedKey
     printf("Failed to allocate memory for output block.\n");
     return NULL;
   }
 
-  // Initial Round: AddRoundKey
+  // step3: Initial Round: AddRoundKey
   memcpy(output, plaintext, BLOCK_SIZE);
+  // debugggg
+  printf("This is output after copy plaintext: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
   add_round_key(output, expandedKey);
+  // debugggg
 
-  // 9 Main Rounds
+  printf("This is key: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", expandedKey[i]);
+  }
+  printf("This is output after add round key: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
+
+  // step4: 9 Main Rounds
   for (int round = 1; round <= 9; ++round) {
     sub_bytes(output);
     shift_rows(output);
@@ -311,13 +328,21 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
             (round *
              BLOCK_SIZE));  // Use the correct segment of the expanded key
   }
+  // debuggggg
+  printf("This is the result after 9 main rounds: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
 
   // Final Round (without MixColumns)
   sub_bytes(output);
   shift_rows(output);
-  add_round_key(output,
-                expandedKey + 10 * BLOCK_SIZE);  // Final round uses the last
-                                                 // segment of the expanded key
+  add_round_key(output, expandedKey + 10 * BLOCK_SIZE);
+  // debugggggggg
+  printf("This is the result of final round: ");
+  for (int i = 0; i < BLOCK_SIZE; ++i) {
+    printf("%02x ", output[i]);
+  }
 
   free(expandedKey);  // Free the dynamically allocated expandedKey
   return output;

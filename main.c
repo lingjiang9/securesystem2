@@ -27,12 +27,6 @@ int main() {
   // unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
   //                          75, 17, 51, 17, 4,  8, 6,  99};
 
-  unsigned char plaintext[16] = {50, 67, 246, 168, 136, 90, 48, 141,
-                                 49, 49, 152, 162, 224, 55, 7,  52};
-
-  unsigned char key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
-                           171, 247, 21, 136, 9,  207, 79,  60};
-
   unsigned char *ciphertext = aes_encrypt_block(plaintext, key);
   // unsigned char *recovered_plaintext = aes_decrypt_block(ciphertext, key);
 
