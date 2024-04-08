@@ -6,12 +6,20 @@ jobs:
     steps:
       - name: Clone the repo
         uses: actions/checkout@v4
+
       - name: Install pre-req packages
         run: |
-          sudo apt install -y build-essential python-is-python3
+          sudo apt-get update
+          sudo apt-get install -y build-essential python-is-python3
+
       - name: Build the code
         run: |
           make
-      - name: Run tests
+
+      - name: Complie the code
         run: |
-          python3 test.py
+          gcc -Wall -Wextra -g test.c rijndael.c -o test
+
+      - name: Run C tests
+        run: |
+          ./test

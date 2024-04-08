@@ -1,6 +1,6 @@
 /*
  * TODO: Ling Jiang, D22128264
- *       a brief description of this code. 
+ *       a brief description of this code.
  */
 
 #ifndef RIJNDAEL_H
@@ -17,8 +17,6 @@ void shift_rows(unsigned char *block);
 void mix_columns(unsigned char *block);
 void invert_mix_columns(unsigned char *block);
 
-
-
 /*
  * These should be the main encrypt/decrypt functions (i.e. the main
  * entry point to the library for programmes hoping to use it to
@@ -26,5 +24,6 @@ void invert_mix_columns(unsigned char *block);
  */
 unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key);
 unsigned char *aes_decrypt_block(unsigned char *ciphertext, unsigned char *key);
+unsigned char *expand_key(unsigned char *cipher_key);
 
 #endif

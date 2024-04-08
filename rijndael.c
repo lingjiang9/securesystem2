@@ -204,6 +204,7 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
  * which is a single 128-bit key, it should return a 176-byte
  * vector, containing the 11 round keys one after the other
  */
+
 #define AES_KEY_SIZE 16
 #define AES_EXP_KEY_SIZE 176
 
@@ -213,11 +214,11 @@ static const unsigned char r_con[] = {0x01, 0x02, 0x04, 0x08, 0x10,
 unsigned char *expand_key(unsigned char *cipher_key) {
   unsigned char *expanded_key = (unsigned char *)malloc(AES_EXP_KEY_SIZE);
   if (!expanded_key) {
-    // Handle memory allocation error
     return NULL;
   }
 
   unsigned char temp[4];
+  unsigned char temp2[4];
   int i = 0;
   int rconIndex = 0;  // Index for accessing r_con array
 
@@ -228,12 +229,15 @@ unsigned char *expand_key(unsigned char *cipher_key) {
 
   // Generate the rest of the expanded key
   while (i < AES_EXP_KEY_SIZE) {
+    // printf("This is the start %d\n", i);
     for (int j = 0; j < 4; j++) {
       temp[j] = expanded_key[(i - 4) + j];
+      temp2[j] = expanded_key[(i - AES_KEY_SIZE) + j];
     }
 
     if (i % AES_KEY_SIZE == 0) {
       // Rotate the temp array
+      printf("MOD 16");
       unsigned char t = temp[0];
       temp[0] = temp[1];
       temp[1] = temp[2];
@@ -246,13 +250,24 @@ unsigned char *expand_key(unsigned char *cipher_key) {
       }
 
       // XOR the first byte with the Rcon value and move to the next Rcon value
-      temp[0] ^= r_con[rconIndex++];
-    }
+      temp[0] ^= r_con[rconIndex];
+      rconIndex++;
 
-    // XOR temp with the 16-byte block i bytes ago
-    for (int j = 0; j < 4; j++) {
-      expanded_key[i] = expanded_key[i - AES_KEY_SIZE] ^ temp[j];
-      i++;
+      for (int j = 0; j < 4; j++) {
+        // XOR temp with the 16-byte block i bytes ago
+        expanded_key[i] = temp[j] ^ temp2[j];
+        printf("This is end, %d: ", i);
+        printf("%d\n", expanded_key[i]);
+        i++;
+      }
+    } else {
+      //   XOR temp with the 16-byte block i bytes ago
+      for (int j = 0; j < 4; j++) {
+        expanded_key[i] = temp[j] ^ temp2[j];
+        printf("This is end, %d: ", i);
+        printf("%d\n", expanded_key[i]);
+        i++;
+      }
     }
   }
 

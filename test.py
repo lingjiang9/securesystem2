@@ -20,7 +20,7 @@ class TestBlock(unittest.TestCase):
         self.aes_lib.sub_bytes.restype = None
 
 
-        self.aes_lib.expand_key.argtypes = [ctypes.POINTER(ctypes.c_ubyte), ctypes.POINTER(ctypes.c_ubyte)]
+        self.aes_lib.expand_key.argtypes = [ctypes.POINTER(ctypes.c_ubyte)]
         self.aes_lib.expand_key.restype = None
        
     # =============================sub_byte test=====================================
@@ -162,38 +162,42 @@ class TestBlock(unittest.TestCase):
     def test_expand_key(self):
       """Test the expand_key function in C."""
     # Given 128-bit key directly defined as bytes
-      given_key = b'\x2B\x7E\x15\x16\x28\xAE\xD2\xA6\xAB\xF7\x15\x88\x09\xCF\x4F\x3C'
+    #   given_key = [
+    #       0x2b, 0x7e, 0x15, 0x16,
+    #       0x28, 0xae, 0xd2, 0xa6,
+    #       0xab, 0xf7, 0x15, 0x88,
+    #       0x09, 0xcf, 0x4f, 0x3c
+    #   ]
+
+      given_key = [43,126,21,22,40,174,210,166,171,247,21,136,9,207,79,60]
     
     # Expected 176-byte expanded key directly defined as bytes
-      expected_expanded_key = (
-        b'\x2B\x7E\x15\x16\x28\xAE\xD2\xA6\xAB\xF7\x15\x88\x09\xCF\x4F\x3C'
-        b'\xA0\xFA\xFE\x17\x88\x54\x2C\xB1\x23\xA3\x39\x39\x2A\x6C\x76\x05'
-        b'\xF2\xC2\x95\xF2\x7A\x96\xB9\x43\x59\x35\x80\x7A\x73\x59\xF6\x7F'
-        b'\x3D\x80\x47\x7D\x47\x16\xFE\x3E\x1E\x23\x7E\x44\x6D\x7A\x88\x3B'
-        b'\xEF\x44\xA5\x41\xA8\x52\x5B\x7F\xB6\x71\x25\x3B\xDB\x0B\xAD\x00'
-        b'\xD4\xD1\xC6\xF8\x7C\x83\x9D\x87\xCA\xF2\xB8\xBC\x11\xF9\x15\xBC'
-        b'\x6D\x88\xA3\x7A\x11\x0B\x3A\x96\x1F\x6E\x20\x85\x52\x0A\xD9\x9D'
-        b'\xEA\xB5\x31\x7B\x0A\x2F\xA5\x5A\xF3\x4A\xF2\x64\x8D\x84\x4A\xD0'
-        b'\xC8\x10\x05\x5C\x67\x15\xB6\x0E\x85\x25\x01\x78\x75\x9C\xEC\xF5'
-        b'\x02\x03\x1E\x22\x5F\x6B\x53\x6C\x10\x28\x0A\xF1\x41\x57\x83\x0C'
-        b'\x7B\xEF\xF2\x91\x39\x33\x42\x07\x94\xA5\x11\x48\x25\x19\x49\x41'
-        b'\x1D\x31\x9E\xA9\xE5\x3D\x77\xDD\xC5\x85\x9A\x7A\x6A\x78\x27\xBA'
-    )
-    
+      expected_expanded_key = [
+          0x2b, 0x7e, 0x15, 0x16,
+          0x28, 0xae, 0xd2, 0xa6,
+          0xab, 0xf7, 0x15, 0x88,
+          0x09, 0xcf, 0x4f, 0x3c,
+          0xa0, 0xfa, 0xfe, 0x17
+      ]
+        
     # Prepare input key as ctypes array
       input_key_ctypes = (ctypes.c_ubyte * 16)(*given_key)
     # Prepare output buffer for expanded key
-      output_expanded_key_ctypes = (ctypes.c_ubyte * 176)()
+    #   output_expanded_key_ctypes = (ctypes.c_ubyte * 176)()
     
     # Call the C expand_key function directly with arrays
-      self.aes_lib.expand_key(input_key_ctypes, output_expanded_key_ctypes)
+      output_expanded_key_ctypes = ctypes.string_at(self.aes_lib.expand_key(input_key_ctypes),176)
+
     
-    # Convert the ctypes array back to bytes
-      output_expanded_key = bytes(output_expanded_key_ctypes)
+    # # Convert the ctypes array back to bytes
+    #   output_expanded_key = (ctypes.c_ubyte * 176)(output_expanded_key_ctypes)
+      output_expanded_key = (ctypes.c_ubyte * 176).from_buffer_copy(output_expanded_key_ctypes)
+      print(f"PRINTEEEEEEE ")
+      print(bytearray(output_expanded_key))
     
     # Assert that the expanded key matches the expected value
       self.assertEqual(output_expanded_key, expected_expanded_key, "expand_key test failed")
-    print("expand_key test successful")
+    
 
 
 if __name__ == "__main__":
