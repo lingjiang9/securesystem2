@@ -255,36 +255,33 @@ int main() {
   }
 
   //+++++++++++++++++test case 9: aes_encrypt_block++++++++++++
-  //   unsigned char plaintext9[16] = {50, 67, 246, 168, 136, 90, 48, 141,
-  //                                   49, 49, 152, 162, 224, 55, 7,  52};
-  //   unsigned char initial_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
-  //                                    171, 247, 21, 136, 9,  207, 79,  60};
-  //   unsigned char expected_ciphertext9[16] = {57,  37, 132, 29,  2,  220, 9,
-  //   251,
-  //                                             220, 17, 133, 151, 25, 106, 11,
-  //                                             50};
+  unsigned char plaintext9[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+                                  49, 49, 152, 162, 224, 55, 7,  52};
+  unsigned char initial_key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
+                                   171, 247, 21, 136, 9,  207, 79,  60};
+  unsigned char expected_ciphertext9[16] = {57,  37, 132, 29,  2,  220, 9,  251,
+                                            220, 17, 133, 151, 25, 106, 11, 50};
 
-  //   printf("Before encryption:\n");
-  //   print_block(plaintext9, 16);
+  printf("Before encryption:\n");
+  print_block(plaintext9, 16);
 
-  //   unsigned char *ciphertext = aes_encrypt_block(plaintext9, initial_key);
+  unsigned char *ciphertext = aes_encrypt_block(plaintext9, initial_key);
 
-  //   printf("After encryption:\n");
-  //   print_block(ciphertext, 16);
-  //   printf("expected output:\n");
-  //   print_block(expected_ciphertext9, 16);
+  printf("After encryption:\n");
+  print_block(ciphertext, 16);
+  printf("expected output:\n");
+  print_block(expected_ciphertext9, 16);
 
-  //   // Compare the generated ciphertext with the expected ciphertext
-  //   if (memcmp(ciphertext, expected_ciphertext9, 16) == 0) {
-  //     printf(
-  //         "Test case 9: AES Encryption SUCCESS: Ciphertext matches the
-  //         expected " "ciphertext.\n");
-  //   } else {
-  //     printf(
-  //         "Test case 9 AES Encryption FAILED: Ciphertext does not match the "
-  //         "expected "
-  //         "ciphertext.\n");
-  //   }
+  // Compare the generated ciphertext with the expected ciphertext
+  if (memcmp(ciphertext, expected_ciphertext9, 16) == 0) {
+    printf(
+        "Test case 9: AES Encryption SUCCESS: Ciphertext matches the expected "
+        "ciphertext.\n");
+  } else {
+    printf(
+        "Test case 9 AES Encryption FAILED: Ciphertext does not match the "
+        "expected ciphertext.\n");
+  }
 
   return 0;
 };
