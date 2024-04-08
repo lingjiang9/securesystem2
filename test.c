@@ -292,7 +292,7 @@ int main() {
   printf("Before invert sub_bytes:\n");
   print_block(test_block10, 16);
 
-  invert_sub_bytes(test_block10);
+  inverse_sub_bytes(test_block10);
 
   printf("After invert sub_bytes:\n");
   print_block(test_block10, 16);
@@ -333,7 +333,31 @@ int main() {
   if (memcmp(test_block11, expected_output11, 16) == 0) {
     printf("Test Case 11 inverse shift rows Passed.\n");
   } else {
-    printf("Test Case 2 inverse shift rows Failed.\n");
+    printf("Test Case 11 inverse shift rows Failed.\n");
+  }
+
+  // +++++++++++++Test Case 12: inverse mix columns++++++++++++
+  unsigned char test_block12[16] = {4,  102, 129, 229, 224, 203, 25, 154,
+                                    72, 248, 211, 122, 40,  6,   38, 76};
+  unsigned char expected_output12[16] = {212, 191, 93, 48,  224, 180, 82,  174,
+                                         184, 65,  17, 241, 30,  39,  152, 229};
+
+  printf("Before inverse mix_columns:\n");
+  print_block(test_block12, 16);
+
+  inverse_mix_columns(test_block12);
+
+  printf("After inverse mix_columns:\n");
+  print_block(test_block12, 16);
+
+  printf("Expected output:\n");
+  print_block(expected_output12, 16);
+
+  // Using memcmp for comparison
+  if (memcmp(test_block12, expected_output12, 16) == 0) {
+    printf("Test Case 12 inverse mix columns Passed.\n");
+  } else {
+    printf("Test Case 12 inverse mix columns Failed.\n");
   }
 
   return 0;

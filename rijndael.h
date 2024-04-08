@@ -12,10 +12,10 @@
 #define EXPANDED_KEY_SIZE 176
 #define AES_ROUNDS 10
 void sub_bytes(unsigned char *block);
-void invert_sub_bytes(unsigned char *block);
+void inverse_sub_bytes(unsigned char *block);
 void shift_rows(unsigned char *block);
 void mix_columns(unsigned char *block);
-void invert_mix_columns(unsigned char *block);
+void inverse_mix_columns(unsigned char *block);
 void add_round_key(unsigned char *block, unsigned char *round_key);
 void inverse_shift_rows(unsigned char *block);
 

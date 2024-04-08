@@ -82,7 +82,7 @@ void shift_rows(unsigned char *block) {
   block[3] = temp;
 }
 
-// mix columns
+// ------------mix columns-------------
 
 #define xtime(x) (((x) << 1) ^ ((((x) >> 7) & 1) * 0x1b))
 #define multiply(x, y)                           \
@@ -197,7 +197,7 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
 /*
  * Operations used when decrypting a block
  */
-//---------------------invert sub bytes------------------
+//---------------------inverse sub bytes------------------
 static const unsigned char inv_s_box[256] = {
     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E,
     0x81, 0xF3, 0xD7, 0xFB, 0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87,
@@ -222,7 +222,7 @@ static const unsigned char inv_s_box[256] = {
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63,
     0x55, 0x21, 0x0C, 0x7D,
 };
-void invert_sub_bytes(unsigned char *block) {
+void inverse_sub_bytes(unsigned char *block) {
   for (int i = 0; i < 16; i++) {
     block[i] = inv_s_box[block[i]];
   }
@@ -256,22 +256,42 @@ void inverse_shift_rows(unsigned char *block) {
   block[15] = temp;
 }
 
-// invert mix columns
+// ------------------inverse mix columns------------------
 
-// void invert_mix_columns(unsigned char *block) {
-//   for (int i = 0; i < 4; i++) {
-//     unsigned char u =
-//         xtime(xtime(BLOCK_ACCESS(block, 0, i) ^ BLOCK_ACCESS(block, 2, i)));
-//     unsigned char v =
-//         xtime(xtime(BLOCK_ACCESS(block, 1, i) ^ BLOCK_ACCESS(block, 3, i)));
-//     BLOCK_ACCESS(block, 0, i) ^= u;
-//     BLOCK_ACCESS(block, 1, i) ^= v;
-//     BLOCK_ACCESS(block, 2, i) ^= u;
-//     BLOCK_ACCESS(block, 3, i) ^= v;
-//   }
+#define xtime(x) (((x) << 1) ^ ((((x) >> 7) & 1) * 0x1b))
+#define multiply(x, y)                           \
+  (((y) & 1) * (x) ^ ((y >> 1) & 1) * xtime(x) ^ \
+   ((y >> 2) & 1) * xtime(xtime(x)) ^ ((y >> 3) & 1) * xtime(xtime(xtime(x))))
 
-//   mix_columns(block);  // forward mix_columns to complete the inversion
-// }
+// Function to perform Inverse MixColumns operation on a single column
+void inverse_mix_column(unsigned char *column) {
+  unsigned char temp[4];
+  temp[0] = multiply(column[0], 0x0e) ^ multiply(column[1], 0x0b) ^
+            multiply(column[2], 0x0d) ^ multiply(column[3], 0x09);
+  temp[1] = multiply(column[0], 0x09) ^ multiply(column[1], 0x0e) ^
+            multiply(column[2], 0x0b) ^ multiply(column[3], 0x0d);
+  temp[2] = multiply(column[0], 0x0d) ^ multiply(column[1], 0x09) ^
+            multiply(column[2], 0x0e) ^ multiply(column[3], 0x0b);
+  temp[3] = multiply(column[0], 0x0b) ^ multiply(column[1], 0x0d) ^
+            multiply(column[2], 0x09) ^ multiply(column[3], 0x0e);
+  for (int i = 0; i < 4; i++) {
+    column[i] = temp[i];
+  }
+}
+
+// Function to perform Inverse MixColumns operation on the entire state matrix
+void inverse_mix_columns(unsigned char *block) {
+  for (int i = 0; i < 4; i++) {
+    unsigned char column[4];
+    for (int j = 0; j < 4; j++) {
+      column[j] = block[i * 4 + j];  // Corrected indices here
+    }
+    inverse_mix_column(column);
+    for (int j = 0; j < 4; j++) {
+      block[i * 4 + j] = column[j];  // Corrected indices here
+    }
+  }
+}
 
 /*
  * This operation is shared between encryption and decryption
