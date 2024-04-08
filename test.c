@@ -283,5 +283,33 @@ int main() {
         "expected ciphertext.\n");
   }
 
+  //++++++++++++++++++++test case 10: invert_sub_bytes test ++++++++++++++++++
+  unsigned char test_block10[16] = {212, 224, 184, 30, 39,  191, 180, 65,
+                                    17,  152, 93,  82, 174, 241, 229, 48};
+  unsigned char expected_output10[16] = {25,  160, 154, 233, 61,  244, 198, 248,
+                                         227, 226, 141, 72,  190, 43,  42,  8};
+
+  printf("Before invert sub_bytes:\n");
+  print_block(test_block10, 16);
+
+  invert_sub_bytes(test_block10);
+
+  printf("After invert sub_bytes:\n");
+  print_block(test_block10, 16);
+
+  printf("Expected output:\n");
+  print_block(expected_output10, 16);
+
+  // Using memcmp for comparison
+  if (memcmp(test_block10, expected_output10, 16) == 0) {
+    printf(
+        "Test Case 10 invert sub byte Passed: The output matches the expected "
+        "output.\n");
+  } else {
+    printf(
+        "Test Case 10 invert sub byte Failed: The output does not match the "
+        "expected output.\n");
+  }
+
   return 0;
 };

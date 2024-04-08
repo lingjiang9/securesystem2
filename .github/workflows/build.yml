@@ -16,7 +16,7 @@ jobs:
       #   run: |
       #     make
 
-      - name: Complie the code
+      - name: Compile the code
         run: |
           gcc -Wall -Wextra -g test.c rijndael.c -o test
 
