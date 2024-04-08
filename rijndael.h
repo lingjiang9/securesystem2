@@ -17,6 +17,7 @@ void shift_rows(unsigned char *block);
 void mix_columns(unsigned char *block);
 void invert_mix_columns(unsigned char *block);
 void add_round_key(unsigned char *block, unsigned char *round_key);
+void inverse_shift_rows(unsigned char *block);
 
 /*
  * These should be the main encrypt/decrypt functions (i.e. the main

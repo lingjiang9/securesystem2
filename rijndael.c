@@ -197,7 +197,7 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
 /*
  * Operations used when decrypting a block
  */
-
+//---------------------invert sub bytes------------------
 static const unsigned char inv_s_box[256] = {
     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E,
     0x81, 0xF3, 0xD7, 0xFB, 0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87,
@@ -228,32 +228,33 @@ void invert_sub_bytes(unsigned char *block) {
   }
 }
 
-// void invert_shift_rows(unsigned char *block) {
-//   unsigned char temp;
+// ------------inverse shift rows------------------
+void inverse_shift_rows(unsigned char *block) {
+  unsigned char temp;
 
-// Inverse shift the second row right by 1 (equivalent to left by 3)
-//   temp = BLOCK_ACCESS(block, 3, 1);
-//   for (int col = 3; col > 0; col--) {
-//     BLOCK_ACCESS(block, col, 1) = BLOCK_ACCESS(block, col - 1, 1);
-//   }
-//   BLOCK_ACCESS(block, 0, 1) = temp;
+  // Second row (shift right by 1)
+  temp = block[1];
+  block[1] = block[13];
+  block[13] = block[9];
+  block[9] = block[5];
+  block[5] = temp;
 
-// Inverse shift the third row right by 2 (equivalent to left by 2)
-// We can do this in two steps or directly swap the positions
-//   temp = BLOCK_ACCESS(block, 2, 2);
-//   BLOCK_ACCESS(block, 2, 2) = BLOCK_ACCESS(block, 0, 2);
-//   BLOCK_ACCESS(block, 0, 2) = temp;
-//   temp = BLOCK_ACCESS(block, 3, 2);
-//   BLOCK_ACCESS(block, 3, 2) = BLOCK_ACCESS(block, 1, 2);
-//   BLOCK_ACCESS(block, 1, 2) = temp;
+  // Third row (shift right by 2)
+  temp = block[2];
+  block[2] = block[10];
+  block[10] = temp;
 
-// Inverse shift the fourth row right by 3 (equivalent to left by 1)
-//   temp = BLOCK_ACCESS(block, 0, 3);
-//   for (int col = 0; col < 3; col++) {
-//     BLOCK_ACCESS(block, col, 3) = BLOCK_ACCESS(block, col + 1, 3);
-//   }
-//   BLOCK_ACCESS(block, 3, 3) = temp;
-// }
+  temp = block[6];
+  block[6] = block[14];
+  block[14] = temp;
+
+  // Fourth row (shift right by 3)
+  temp = block[3];
+  block[3] = block[7];
+  block[7] = block[11];
+  block[11] = block[15];
+  block[15] = temp;
+}
 
 // invert mix columns
 

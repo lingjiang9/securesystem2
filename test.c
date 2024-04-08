@@ -311,5 +311,30 @@ int main() {
         "expected output.\n");
   }
 
+  // +++++++++++++Test Case 11: inverse shift rows++++++++++++
+  unsigned char test_block11[16] = {212, 191, 93, 48,  224, 180, 82,  174,
+                                    184, 65,  17, 241, 30,  39,  152, 229};
+
+  unsigned char expected_output11[16] = {212, 39,  17, 174, 224, 191, 152, 241,
+                                         184, 180, 93, 229, 30,  65,  82,  48};
+
+  printf("Before inverse shift_rows:\n");
+  print_block(test_block11, 16);
+
+  inverse_shift_rows(test_block11);
+
+  printf("After inverse shift_rows:\n");
+  print_block(test_block11, 16);
+
+  printf("Expected output:\n");
+  print_block(expected_output11, 16);
+
+  // Using memcmp for comparison
+  if (memcmp(test_block11, expected_output11, 16) == 0) {
+    printf("Test Case 11 inverse shift rows Passed.\n");
+  } else {
+    printf("Test Case 2 inverse shift rows Failed.\n");
+  }
+
   return 0;
 };
