@@ -216,47 +216,43 @@ int main() {
         "ciphertext.\n");
   }
 
-  //+++++++++++++++test case8: final round+++++++++++++(without MixColumns)
-  //   unsigned char plaintext8[16] = {235, 64,  242, 30,  89, 46,  56, 132,
-  //                                   139, 161, 19,  231, 27, 195, 66, 210};
-  //   unsigned char expandedKey8[176] = {
-  //       43,  126, 21,  22,  40,  174, 210, 166, 171, 247, 21,  136, 9,   207,
-  //       79, 60,  160, 250, 254, 23,  136, 84,  44,  177, 35,  163, 57,  57,
-  //       42,  108, 118, 5,   242, 194, 149, 242, 122, 150, 185, 67,  89,  53,
-  //       128, 122, 115, 89,  246, 127, 61,  128, 71,  125, 71,  22,  254, 62,
-  //       30,  35,  126, 68, 109, 122, 136, 59,  239, 68,  165, 65,  168, 82,
-  //       91,  127, 182, 113, 37, 59,  219, 11,  173, 0,   212, 209, 198, 248,
-  //       124, 131, 157, 135, 202, 242, 184, 188, 17,  249, 21,  188, 109, 136,
-  //       163, 122, 17,  11,  62,  253, 219, 249, 134, 65,  202, 0,   147, 253,
-  //       78,  84,  247, 14,  95,  95,  201, 243, 132, 166, 79,  178, 78,  166,
-  //       220, 79,  234, 210, 115, 33,  181, 141, 186, 210, 49,  43,  245, 96,
-  //       127, 141, 41,  47,  172, 119, 102, 243, 25,  250, 220, 33,  40,  209,
-  //       41,  65,  87,  92,  0,   110, 208, 20,  249, 168, 201, 238, 37,  137,
-  //       225, 63,  12,  200, 182, 99,  12,  166};
-  //   unsigned char expected_ciphertext8[16] = {57,  37, 132, 29,  2,  220, 9,
-  //   251,
-  //                                             220, 17, 133, 151, 25, 106, 11,
-  //                                             50};
+  //+++++++++++++++test case8: final round(without MixColumns)++++++++++++
+  unsigned char plaintext8[16] = {235, 64,  242, 30,  89, 46,  56, 132,
+                                  139, 161, 19,  231, 27, 195, 66, 210};
+  unsigned char expandedKey8[176] = {
+      43,  126, 21,  22,  40,  174, 210, 166, 171, 247, 21,  136, 9,   207, 79,
+      60,  160, 250, 254, 23,  136, 84,  44,  177, 35,  163, 57,  57,  42,  108,
+      118, 5,   242, 194, 149, 242, 122, 150, 185, 67,  89,  53,  128, 122, 115,
+      89,  246, 127, 61,  128, 71,  125, 71,  22,  254, 62,  30,  35,  126, 68,
+      109, 122, 136, 59,  239, 68,  165, 65,  168, 82,  91,  127, 182, 113, 37,
+      59,  219, 11,  173, 0,   212, 209, 198, 248, 124, 131, 157, 135, 202, 242,
+      184, 188, 17,  249, 21,  188, 109, 136, 163, 122, 17,  11,  62,  253, 219,
+      249, 134, 65,  202, 0,   147, 253, 78,  84,  247, 14,  95,  95,  201, 243,
+      132, 166, 79,  178, 78,  166, 220, 79,  234, 210, 115, 33,  181, 141, 186,
+      210, 49,  43,  245, 96,  127, 141, 41,  47,  172, 119, 102, 243, 25,  250,
+      220, 33,  40,  209, 41,  65,  87,  92,  0,   110, 208, 20,  249, 168, 201,
+      238, 37,  137, 225, 63,  12,  200, 182, 99,  12,  166};
+  unsigned char expected_ciphertext8[16] = {57,  37, 132, 29,  2,  220, 9,  251,
+                                            220, 17, 133, 151, 25, 106, 11, 50};
 
-  //   sub_bytes(plaintext8);
-  //   shift_rows(plaintext8);
-  //   add_round_key(plaintext8, expandedKey8 + 10 * BLOCK_SIZE);
+  sub_bytes(plaintext8);
+  shift_rows(plaintext8);
+  add_round_key(plaintext8, expandedKey8 + 10 * BLOCK_SIZE);
 
-  //   printf("After final round:\n");
-  //   print_block(plaintext8, 16);
-  //   printf("After final round expected output:\n");
-  //   print_block(expected_ciphertext8, 16);
-  //   // Compare the generated ciphertext with the expected ciphertext
-  //   if (memcmp(plaintext8, expected_ciphertext8, BLOCK_SIZE) == 0) {
-  //     printf(
-  //         "Test case 8: final rounds Passed: Ciphertext matches the expected
-  //         " "ciphertext.\n");
-  //   } else {
-  //     printf(
-  //         "Test case 8 final rounds Failed: Ciphertext does not match the "
-  //         "expected "
-  //         "ciphertext.\n");
-  //   }
+  printf("After final round:\n");
+  print_block(plaintext8, 16);
+  printf("After final round expected output:\n");
+  print_block(expected_ciphertext8, 16);
+  // Compare the generated ciphertext with the expected ciphertext
+  if (memcmp(plaintext8, expected_ciphertext8, BLOCK_SIZE) == 0) {
+    printf(
+        "Test case 8: final rounds Passed: Ciphertext matches the expected "
+        "ciphertext.\n");
+  } else {
+    printf(
+        "Test case 8 final rounds Failed: Ciphertext does not match the "
+        "expected ciphertext.\n");
+  }
 
   //+++++++++++++++++test case 9: aes_encrypt_block++++++++++++
   //   unsigned char plaintext9[16] = {50, 67, 246, 168, 136, 90, 48, 141,
