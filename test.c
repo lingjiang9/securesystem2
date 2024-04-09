@@ -422,5 +422,29 @@ int main() {
     printf("Test case 15: 10 main inverse rounds Failed.\n");
   }
 
+  //+++++++++++++++++test case 16: aes_decrypt_block++++++++++++
+  unsigned char ciphertext16[16] = {57,  37, 132, 29,  2,  220, 9,  251,
+                                    220, 17, 133, 151, 25, 106, 11, 50};
+
+  unsigned char expected_plaintext16[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+                                            49, 49, 152, 162, 224, 55, 7,  52};
+
+  printf("Before decryption:\n");
+  print_block(ciphertext16, 16);
+
+  unsigned char *plaintext16 = aes_decrypt_block(ciphertext16, initial_key);
+
+  printf("After decryption:\n");
+  print_block(plaintext16, 16);
+  printf("expected output:\n");
+  print_block(expected_plaintext16, 16);
+
+  // Compare the generated ciphertext with the expected ciphertext
+  if (memcmp(plaintext16, expected_plaintext16, 16) == 0) {
+    printf("Test case 16: AES Decryption SUCCESS.\n");
+  } else {
+    printf("Test case 16: AES Decryption FAILED.\n");
+  }
+
   return 0;
 };
