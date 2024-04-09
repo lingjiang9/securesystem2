@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "rijndael.h"
+
+#define LIST_SIZE 16
 
 void print_128bit_block(unsigned char *block) {
   for (int i = 0; i < 4; i++) {
@@ -21,14 +24,13 @@ void print_128bit_block(unsigned char *block) {
 }
 
 int main() {
-  unsigned char plaintext[16] = {1, 2,  3,  4,  5,  6,  7,  8,
-                                 9, 10, 11, 12, 13, 14, 15, 16};
-
-  unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
-                           75, 17, 51, 17, 4,  8, 6,  99};
+  unsigned char plaintext[16] = {50, 67, 246, 168, 136, 90, 48, 141,
+                                 49, 49, 152, 162, 224, 55, 7,  52};
+  unsigned char key[16] = {43,  126, 21, 22,  40, 174, 210, 166,
+                           171, 247, 21, 136, 9,  207, 79,  60};
 
   unsigned char *ciphertext = aes_encrypt_block(plaintext, key);
-  // unsigned char *recovered_plaintext = aes_decrypt_block(ciphertext, key);
+  unsigned char *recovered_plaintext = aes_decrypt_block(ciphertext, key);
 
   printf("############ ORIGINAL PLAINTEXT ###########\n");
   print_128bit_block(plaintext);
@@ -36,14 +38,11 @@ int main() {
   printf("\n\n################ CIPHERTEXT ###############\n");
   print_128bit_block(ciphertext);
 
-  // printf("\n\n########### RECOVERED PLAINTEXT ###########\n");
-  // print_128bit_block(recovered_plaintext);
+  printf("\n\n########### RECOVERED PLAINTEXT ###########\n");
+  print_128bit_block(recovered_plaintext);
 
   free(ciphertext);
-  // free(recovered_plaintext);
-
-  // printf("\n\n########### Micky ###########\n");
-  // unsigned char *result = expand_key(key);
+  free(recovered_plaintext);
 
   return 0;
 }
