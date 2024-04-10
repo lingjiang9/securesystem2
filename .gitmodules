@@ -1,6 +1,6 @@
 [submodule "https:/github.com/lingjiang9/securesystem2.git"]
 	path = https:/github.com/lingjiang9/securesystem2.git
-	url = https://github.com/lingjiang9/rijndael-python-tests.git
+	url = https://github.com/boppreh/aes.git
 [submodule "python-aes"]
 	path = python-aes
 	url = https://github.com/boppreh/aes.git
