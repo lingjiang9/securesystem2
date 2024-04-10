@@ -23,3 +23,8 @@ jobs:
       - name: Run C tests
         run: |
           ./test
+
+      - name: Run Final unit test
+        run: |
+          pip install https://github.com/boppreh/aes.git
+          python3 ./AssignmentTest.py
