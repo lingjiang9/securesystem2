@@ -13,20 +13,31 @@ rijndael = ctypes.CDLL('./rijndael.so')
 
 class FinalUnitTest(unittest.TestCase):
   
+    # def setUp(self):
+    #     self.aes = AES(b'\x00' * 16)
+    #     self.original_key = [random.randint(0, 255) for _ in range(16)]
+    #     self.original_message = [random.randint(0, 255) for _ in range(16)]
+    #     print(f"Original Key: {self.original_key}")
+    #     print(f"Original Message: {self.original_message}")
+
+    #     self.key = bytes(self.original_key)
+    #     self.message = bytes(self.original_message)
+
     def setUp(self):
         self.aes = AES(b'\x00' * 16)
-        self.original_key = [random.randint(0, 255) for _ in range(16)]
-        self.original_message = [random.randint(0, 255) for _ in range(16)]
-        print(f"Original Key: {self.original_key}")
-        print(f"Original Message: {self.original_message}")
+        self.key = []
+        self.message = []
 
-        self.key = bytes(self.original_key)
-        self.message = bytes(self.original_message)
-        
-        
-        
+        for _ in range(3):  # Generate three sets of keys and messages
+            self.original_key = [random.randint(0, 255) for _ in range(16)]
+            self.original_message = [random.randint(0, 255) for _ in range(16)]
 
-  
+            self.key =bytes(self.original_key)
+            self.message =bytes(self.original_message)
+
+        print(f"Original Messages:{self.original_message}")
+
+
     def test_aes(self):    
        ciphertext_python= AES(bytes(self.key)).encrypt_block(bytes(self.message))
        self.ciphertext_python = ciphertext_python
