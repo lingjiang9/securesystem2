@@ -26,5 +26,5 @@ jobs:
 
       - name: Run Final unit test
         run: |
-          pip install git+https://github.com/boppreh/aes.git
+          git submodule update --init --recursive
           python3 ./AssignmentTest.py
