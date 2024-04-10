@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, './python-aes')
+sys.path.insert(0, './aes')
 from aes import AES
 
 
