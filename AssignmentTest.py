@@ -1,4 +1,7 @@
 
+# This is a file that tests the encryption and decryption of AES in python and C and compares the results see if they match
+
+
 import sys
 sys.path.append('./submodule-aes')
 from aes import AES
@@ -7,15 +10,9 @@ import ctypes
 import unittest
 import random
 
-
-
 rijndael = ctypes.CDLL('./rijndael.so')
 
 class FinalUnitTest(unittest.TestCase):
-#     """
-#     Tests raw AES-128 block operations.
-#     """
-    # def generate_random_16_byte_stringl():
   
     def setUp(self):
         self.aes = AES(b'\x00' * 16)

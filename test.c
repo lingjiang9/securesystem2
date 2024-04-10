@@ -1,14 +1,14 @@
+/*This file(test.c) is used to test expected value of
+every single function and major encryption and decryption functions during my
+development. The test object is the file(rijndael.c). Tests taken from the NIST
+document, Appendix B–Cipher Example- page 33,
+http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "rijndael.h"
-
-/*This file(test.c) includes 16 test cases. It is used to test expected value of
-every single functions and major encryption and decryption functions. The test
-object is the file(rijndael.c). Tests taken from the NIST document, Appendix B
-–Cipher Example- page 33,
-http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf*/
 
 void print_block(const unsigned char *block, int length) {
   for (int i = 0; i < length; i++) {
@@ -35,7 +35,6 @@ int main() {
   printf("Expected output:\n");
   print_block(expected_output1, 16);
 
-  // Using memcmp for comparison
   if (memcmp(test_block1, expected_output1, 16) == 0) {
     printf("Test Case 1 Passed: The output matches the expected output.\n");
   } else {
@@ -61,7 +60,6 @@ int main() {
   printf("Expected output:\n");
   print_block(expected_output2, 16);
 
-  // Using memcmp for comparison
   if (memcmp(test_block2, expected_output2, 16) == 0) {
     printf("Test Case 2 Passed: The output matches the expected output.\n");
   } else {
@@ -86,16 +84,13 @@ int main() {
   printf("Expected output:\n");
   print_block(expected_output3, 16);
 
-  // Using memcmp for comparison
   if (memcmp(test_block3, expected_output3, 16) == 0) {
-    printf("Test Case 3 Passed: The output matches the expected output.\n");
+    printf("Test Case 3 Passed.\n");
   } else {
-    printf(
-        "Test Case 3 Failed: The output does not match the expected output.\n");
+    printf("Test Case 3 Failed.\n");
   }
 
   //+++Test Case 4 expand key+++
-
   unsigned char test_block4[16] = {43,  126, 21, 22,  40, 174, 210, 166,
                                    171, 247, 21, 136, 9,  207, 79,  60};
   unsigned char expected_output4[176] =
@@ -128,9 +123,9 @@ int main() {
   print_block(expected_output4, 176);
 
   if (memcmp(result4, expected_output4, size) == 0) {
-    printf("test case 4 pass:result4 and expected_output4 match.\n");
+    printf("test case 4 passed.\n");
   } else {
-    printf("test case 4 fail: result4 and expected_output4 do not match.\n");
+    printf("test case 4 failed.\n");
   }
 
   // +++Test Case 5: add round key+++
@@ -154,11 +149,9 @@ int main() {
   print_block(expected_output5, 16);
 
   if (memcmp(test_block5, expected_output5, 16) == 0) {
-    printf("Test Case 5 Passed: The output matches the expected output.\n");
+    printf("Test Case 5 Passed.\n");
   } else {
-    printf(
-        "Test Case 5 add round key Failed: The output does not match the "
-        "expected output.\n");
+    printf("Test Case 5 add round key Failed.\n");
   }
 
   //+++test case 7: 9 main round test+++
@@ -199,16 +192,10 @@ int main() {
   printf("After 9 main rounds expected output:\n");
   print_block(expected_ciphertext, 16);
 
-  // Compare the generated ciphertext with the expected ciphertext
   if (memcmp(plaintext, expected_ciphertext, BLOCK_SIZE) == 0) {
-    printf(
-        "Test case 7: main rounds Passed: Ciphertext matches the expected "
-        "ciphertext.\n");
+    printf("Test case 7: main rounds Passed.\n");
   } else {
-    printf(
-        "Test case 7 main rounds Failed: Ciphertext does not match the "
-        "expected "
-        "ciphertext.\n");
+    printf("Test case 7 main rounds Failed.\n");
   }
 
   //+++test case8: final round(without MixColumns)+++
@@ -238,15 +225,10 @@ int main() {
   print_block(plaintext8, 16);
   printf("After final round expected output:\n");
   print_block(expected_ciphertext8, 16);
-  // Compare the generated ciphertext with the expected ciphertext
   if (memcmp(plaintext8, expected_ciphertext8, BLOCK_SIZE) == 0) {
-    printf(
-        "Test case 8: final rounds Passed: Ciphertext matches the expected "
-        "ciphertext.\n");
+    printf("Test case 8: final rounds Passed.\n");
   } else {
-    printf(
-        "Test case 8 final rounds Failed: Ciphertext does not match the "
-        "expected ciphertext.\n");
+    printf("Test case 8 final rounds Failed.\n");
   }
 
   //+++test case 9: aes_encrypt_block+++
@@ -267,15 +249,10 @@ int main() {
   printf("expected output:\n");
   print_block(expected_ciphertext9, 16);
 
-  // Compare the generated ciphertext with the expected ciphertext
   if (memcmp(ciphertext, expected_ciphertext9, 16) == 0) {
-    printf(
-        "Test case 9: AES Encryption SUCCESS: Ciphertext matches the expected "
-        "ciphertext.\n");
+    printf("Test case 9: AES Encryption SUCCESS.\n");
   } else {
-    printf(
-        "Test case 9 AES Encryption FAILED: Ciphertext does not match the "
-        "expected ciphertext.\n");
+    printf("Test case 9 AES Encryption FAILED.\n");
   }
 
   //+++test case 10: invert_sub_bytes test +++
@@ -294,16 +271,10 @@ int main() {
 
   printf("Expected output:\n");
   print_block(expected_output10, 16);
-
-  // Using memcmp for comparison
   if (memcmp(test_block10, expected_output10, 16) == 0) {
-    printf(
-        "Test Case 10 invert sub byte Passed: The output matches the expected "
-        "output.\n");
+    printf("Test Case 10 invert sub byte Passed.\n");
   } else {
-    printf(
-        "Test Case 10 invert sub byte Failed: The output does not match the "
-        "expected output.\n");
+    printf("Test Case 10 invert sub byte Failed.\n");
   }
 
   // +++Test Case 11: inverse shift rows+++
@@ -348,7 +319,6 @@ int main() {
   printf("Expected output:\n");
   print_block(expected_output12, 16);
 
-  // Using memcmp for comparison
   if (memcmp(test_block12, expected_output12, 16) == 0) {
     printf("Test Case 12 inverse mix columns Passed.\n");
   } else {
@@ -356,7 +326,6 @@ int main() {
   }
 
   //+++test case 14: first round decyption+++
-
   unsigned char test_block14[16] = {57,  37, 132, 29,  2,  220, 9,  251,
                                     220, 17, 133, 151, 25, 106, 11, 50};
 
@@ -434,7 +403,6 @@ int main() {
   printf("expected output:\n");
   print_block(expected_plaintext16, 16);
 
-  // Compare the generated ciphertext with the expected ciphertext
   if (memcmp(plaintext16, expected_plaintext16, 16) == 0) {
     printf("Test case 16: AES Decryption SUCCESS.\n");
   } else {
