@@ -3,5 +3,5 @@
     "rijndael.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled",
-  "python.analysis.extraPaths": ["./python-aes"]
+  "python.analysis.extraPaths": ["./python-aes", "./submodule-aes"]
 }

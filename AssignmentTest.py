@@ -1,7 +1,13 @@
 
+import sys
+sys.path.append('./submodule-aes')
+from aes import AES
+
 import ctypes
 import unittest
 import random
+
+
 
 rijndael = ctypes.CDLL('./rijndael.so')
 
