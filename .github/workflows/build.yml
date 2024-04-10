@@ -26,5 +26,5 @@ jobs:
 
       - name: Run Final unit test
         run: |
-          pip install "git+https://github.com/boppreh/aes.git”
+          pip install git+https://github.com/boppreh/aes.git
           python3 ./AssignmentTest.py
