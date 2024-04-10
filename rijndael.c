@@ -1,13 +1,16 @@
 /*
- * TODO:  Ling Jiang, D22128264
- *       a brief description of this code.
+  * This file contains the implementation of the functions declared in the
+  header file. They are used to encrypt and decrypt data using the AES
+  encryption algorithm. sub functions include:sub bytes, shift rows, mix
+  columns, expand key, add round key, inverse sub bytes, inverse shift rows,
+  inverse mix columns.
  */
+
+#include "rijndael.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// TODO: Any other files you need to include should go here
-
-#include "rijndael.h"
 
 //+++Encryption+++
 
@@ -100,20 +103,17 @@ void mix_columns(unsigned char *block) {
 }
 
 /*
- * This function should expand the round key. Given an input,
- * which is a single 128-bit key, it should return a 176-byte
- * vector, containing the 11 round keys one after the other
+ This function expand the round key. Given an input, which is a single 128-bit
+key, it should return a 176-byte vector, containing the 11 round keys one after
+the other
  */
+
 //---expand key---
-
-#define AES_KEY_SIZE 16
-#define AES_EXP_KEY_SIZE 176
-
 static const unsigned char r_con[] = {0x01, 0x02, 0x04, 0x08, 0x10,
                                       0x20, 0x40, 0x80, 0x1B, 0x36};
 
 unsigned char *expand_key(unsigned char *cipher_key) {
-  unsigned char *expanded_key = (unsigned char *)malloc(AES_EXP_KEY_SIZE);
+  unsigned char *expanded_key = (unsigned char *)malloc(EXPANDED_KEY_SIZE);
   if (!expanded_key) {
     return NULL;
   }
@@ -121,24 +121,24 @@ unsigned char *expand_key(unsigned char *cipher_key) {
   unsigned char temp[4];
   unsigned char temp2[4];
   int i = 0;
-  int rconIndex = 0;  // Index for accessing r_con array
+  int rconIndex = 0;
 
   // Copy the original key as the first 16 bytes of the expanded key
-  for (i = 0; i < AES_KEY_SIZE; i++) {
+  for (i = 0; i < KEY_SIZE; i++) {
     expanded_key[i] = cipher_key[i];
   }
 
   // Generate the rest of the expanded key
-  while (i < AES_EXP_KEY_SIZE) {
-    // printf("This is the start %d\n", i);
+  while (i < EXPANDED_KEY_SIZE) {
+    // printf("This is the start %d\n", i); // debuggggg
     for (int j = 0; j < 4; j++) {
       temp[j] = expanded_key[(i - 4) + j];
-      temp2[j] = expanded_key[(i - AES_KEY_SIZE) + j];
+      temp2[j] = expanded_key[(i - KEY_SIZE) + j];
     }
 
-    if (i % AES_KEY_SIZE == 0) {
+    if (i % KEY_SIZE == 0) {
       // Rotate the temp array
-      //   printf("MOD 16");
+      //   printf("MOD 16");// debuggggg
       unsigned char t = temp[0];
       temp[0] = temp[1];
       temp[1] = temp[2];
@@ -157,16 +157,12 @@ unsigned char *expand_key(unsigned char *cipher_key) {
       for (int j = 0; j < 4; j++) {
         // XOR temp with the 16-byte block i bytes ago
         expanded_key[i] = temp[j] ^ temp2[j];
-        // printf("This is end, %d: ", i);
-        // printf("%d\n", expanded_key[i]);
         i++;
       }
     } else {
       //   XOR temp with the 16-byte block i bytes ago
       for (int j = 0; j < 4; j++) {
         expanded_key[i] = temp[j] ^ temp2[j];
-        // printf("This is end, %d: ", i);
-        // printf("%d\n", expanded_key[i]);
         i++;
       }
     }
@@ -184,9 +180,6 @@ void add_round_key(unsigned char *block, unsigned char *round_key) {
 
 //+++decryption+++
 
-/*
- * Operations used when decrypting a block
- */
 //---inverse sub bytes---
 static const unsigned char inv_s_box[256] = {
     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E,
@@ -283,11 +276,6 @@ void inverse_mix_columns(unsigned char *block) {
   }
 }
 
-/*
- * The implementations of the functions declared in the
- * header file should go here
- */
-
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++                  AES ENCRYPTION                      +++
 // +++                                                      +++
@@ -316,20 +304,11 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
 
   // step3: Initial Round: AddRoundKey
   memcpy(output, plaintext, BLOCK_SIZE);
-  // debugggg
-  // printf("This is output after copy plaintext: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
-  // }
   add_round_key(output, expandedKey);
   // debugggg
   // printf("This is key: ");
   // for (int i = 0; i < BLOCK_SIZE; ++i) {
   //   printf("%02x ", expandedKey[i]);
-  // }
-  // printf("This is output after add round key: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
   // }
 
   // step4: 9 Main Rounds
@@ -343,29 +322,20 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
             (round *
              BLOCK_SIZE));  // Use the correct segment of the expanded key
   }
-  // debuggggg
-  // printf("This is the result after 9 main rounds: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
-  // }
 
   // Final Round (without MixColumns)
   sub_bytes(output);
   shift_rows(output);
   add_round_key(output, expandedKey + 10 * BLOCK_SIZE);
-  // debugggggggg
-  // printf("This is the result of final round: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
-  // }
 
-  free(expandedKey);  // Free the dynamically allocated expandedKey
+  free(expandedKey);
   return output;
 }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++                  AES DECRYPTION                      +++
 // +++                                                      +++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 unsigned char *aes_decrypt_block(unsigned char *ciphertext,
                                  unsigned char *key) {
   // step1: Expand the key
@@ -388,22 +358,13 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   }
   // step3 add last round key
   memcpy(output, ciphertext, BLOCK_SIZE);
-  // debugggg
-  // printf("This is output after copy ciphertext: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
-  // }
   add_round_key(output, expandedKey + 10 * BLOCK_SIZE);
   // debugggg
-
   // printf("This is last round key: ");
   // for (int i = 0; i < BLOCK_SIZE; ++i) {
   //   printf("%02x ", expandedKey[i]);
   // }
-  // printf("This is output after add last round key: ");
-  // for (int i = 0; i < BLOCK_SIZE; ++i) {
-  //   printf("%02x ", output[i]);
-  // }
+
   // step4 inverse shift rows
   inverse_shift_rows(output);
 

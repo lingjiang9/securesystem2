@@ -1,6 +1,5 @@
-/*
- * TODO: Ling Jiang, D22128264
- *       a brief description of this code.
+/* Ling Jiang, D22128264
+ * This file contains the function prototypes for the Rijndael.c file.
  */
 
 #ifndef RIJNDAEL_H
