@@ -1,4 +1,4 @@
-/*
+/* Ling Jiang-D22128264
   * This file contains the implementation of the functions declared in the
   header file. They are used to encrypt and decrypt data using the AES
   encryption algorithm. sub functions include:sub bytes, shift rows, mix
@@ -327,10 +327,10 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key) {
   sub_bytes(output);
   shift_rows(output);
   add_round_key(output, expandedKey + 10 * BLOCK_SIZE);
-
   free(expandedKey);
   return output;
 }
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++                  AES DECRYPTION                      +++
 // +++                                                      +++
