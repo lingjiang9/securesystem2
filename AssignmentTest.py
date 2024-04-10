@@ -1,7 +1,3 @@
-import sys
-sys.path.insert(0, './aes')
-from aes import AES
-
 
 import ctypes
 import unittest
