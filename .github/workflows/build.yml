@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: Clone the repo
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install pre-req packages
         run: |
@@ -26,5 +28,4 @@ jobs:
 
       - name: Run Final unit test
         run: |
-          pip install aes
           python3 ./AssignmentTest.py

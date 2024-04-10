@@ -1,9 +1,6 @@
 import sys
-from os.path import abspath, join, dirname
-
-submodule_path = abspath(join(dirname(__file__), 'python-aes'))
-sys.path.insert(0, submodule_path)
-
+sys.path.insert(0, './python-aes')
+from aes import AES
 
 
 import ctypes
