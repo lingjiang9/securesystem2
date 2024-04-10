@@ -1,7 +1,6 @@
 
 # This is a file that tests the encryption and decryption of AES in python and C and compares the results see if they match
 
-
 import sys
 sys.path.append('./submodule-aes')
 from aes import AES
@@ -16,8 +15,16 @@ class FinalUnitTest(unittest.TestCase):
   
     def setUp(self):
         self.aes = AES(b'\x00' * 16)
-        self.key = bytes([random.randint(0, 255) for _ in range(16)])
-        self.message = bytes([random.randint(0, 255) for _ in range(16)])
+        self.original_key = [random.randint(0, 255) for _ in range(16)]
+        self.original_message = [random.randint(0, 255) for _ in range(16)]
+        print(f"Original Key: {self.original_key}")
+        print(f"Original Message: {self.original_message}")
+
+        self.key = bytes(self.original_key)
+        self.message = bytes(self.original_message)
+        
+        
+        
 
   
     def test_aes(self):    
@@ -71,6 +78,9 @@ class FinalUnitTest(unittest.TestCase):
        plaintext_python = list(bytes.fromhex(self.hex_plaintext_python))
        print(f"Plaintext after Decryption in C: {plaintext_c}")
        print(f"Plaintext after Decryption in Python: {plaintext_python} \nTHEY MATCH, DECRYPTION SUCCESS YAY")
+
+       self.assertEqual(plaintext_c, self.original_message)
+       print(f"Original Message: {self.original_message} and Plaintext after Decryption in C: {plaintext_c} \nTHEY MATCH, SUCCESS")
 
 
 
