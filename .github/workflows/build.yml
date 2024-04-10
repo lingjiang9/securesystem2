@@ -18,7 +18,7 @@ jobs:
 
       - name: Compile the code
         run: |
-          gcc -Wall -Wextra -g test.c rijndael.c AssignmentTest.py -o test
+          gcc -Wall -Wextra -g test.c rijndael.c -o test
 
       - name: Run C tests
         run: |
