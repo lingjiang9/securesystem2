@@ -26,5 +26,6 @@ jobs:
 
       - name: Run Final unit test
         run: |
+          make
           git submodule update --init --recursive
           python3 ./AssignmentTest.py
