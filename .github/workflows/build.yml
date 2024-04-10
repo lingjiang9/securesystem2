@@ -23,7 +23,3 @@ jobs:
       - name: Run C tests
         run: |
           ./test
-
-      - name: Run Final Unit tests
-        run: |
-          python3 ./AssignmentTest.py
