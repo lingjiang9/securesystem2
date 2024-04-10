@@ -4,7 +4,6 @@ from aes import AES
 
 
 import ctypes
-from aes import AES
 import unittest
 import random
 
