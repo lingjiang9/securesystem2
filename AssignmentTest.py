@@ -1,6 +1,7 @@
 
 import sys
-sys.path.append('python-aes')
+sys.path.append('./python-aes')
+
 
 import ctypes
 from aes import AES
