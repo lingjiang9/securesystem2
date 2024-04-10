@@ -18,7 +18,7 @@ jobs:
 
       - name: Compile the code
         run: |
-          gcc -Wall -Wextra -g test.c rijndael.c -o test
+          gcc -Wall -Wextra -g test.c rijndael.c AssignmentTest.py -o test
 
       - name: Run C tests
         run: |
@@ -26,4 +26,4 @@ jobs:
 
       - name: Run Final Unit tests
         run: |
-          python-aes/AssignmentTest.py
+          python3 python-aes/AssignmentTest.py
