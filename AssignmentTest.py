@@ -83,8 +83,8 @@ class FinalUnitTest(unittest.TestCase):
 
         # Compare the plaintext(in hexadecimal) in C and python
           self.assertEqual(hex_plaintext_python, hex_plaintext_c)
-          print(f"Plaintext in hexadecimal in Python: {hex_plaintext_python}")
-          print(" Plaintext in C: {hex_plaintext_c} \nTHEY MATCH YAY !!")
+          print(f"Plaintext(hexadecimal) in Python: {hex_plaintext_python}")
+          print(f"Plaintext(hexadecimal) in C: {hex_plaintext_c} \nTHEY MATCH YAY !!")
           
           plaintext_c = list(bytes.fromhex(hex_plaintext_c))
           plaintext_python = list(bytes.fromhex(hex_plaintext_python))
