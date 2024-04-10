@@ -52,7 +52,7 @@ class FinalUnitTest(unittest.TestCase):
 
         # Compare the ciphertext(in hexadecimal) in C and python
           self.assertEqual(hex_ciphertext_python, hex_ciphertext_c)
-          print(f"Ciphertext(hexadecimal)\nIn Python: {hex_ciphertext_python}\nIn C: {hex_ciphertext_c} \nTHEY MATCH YAY !!")
+          print(f"Ciphertext(hexadecimal)\nIn Python: {hex_ciphertext_python}\nIn C: {hex_ciphertext_c} \nTHEY MATCH ENCRYPTION SUCCESS YAY !!")
 
 
     def test_decryption(self):
@@ -84,12 +84,12 @@ class FinalUnitTest(unittest.TestCase):
         # Compare the plaintext(in hexadecimal) in C and python
           self.assertEqual(hex_plaintext_python, hex_plaintext_c)
           print(f"Plaintext(hexadecimal) in Python: {hex_plaintext_python}")
-          print(f"Plaintext(hexadecimal) in C: {hex_plaintext_c} \nTHEY MATCH YAY !!")
+          print(f"Plaintext(hexadecimal) in C: {hex_plaintext_c} \nTHEY MATCH")
           
           plaintext_c = list(bytes.fromhex(hex_plaintext_c))
           plaintext_python = list(bytes.fromhex(hex_plaintext_python))
           print(f"Plaintext in C: {plaintext_c}")
-          print(f"Plaintext in Python: {plaintext_python}")
+          print(f"Plaintext in Python: {plaintext_python} \nThey MATCH, ENCRYPTION SUCCESS YAY !!")
 
 
 
