@@ -10,14 +10,11 @@ void print_128bit_block(unsigned char *block) {
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       unsigned char value = BLOCK_ACCESS(block, i, j);
-
       // Print spaces before small numbers to ensure that everything is aligned
-      // and looks nice
-      if (value < 10) printf(" ");
-
-      if (value < 100) printf(" ");
-
-      printf("%d", value);
+      printf("%3d", block[i * 4 + j]);
+      if (j < 3) {
+        printf("  ");
+      }
     }
     printf("\n");
   }
