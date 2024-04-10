@@ -17,17 +17,6 @@ void print_block(const unsigned char *block, int length) {
   printf("\n");
 }
 
-// Function to compare two arrays of char
-// int areCharArraysEqual(const unsigned char *result4,
-//                        const unsigned char *expected_output4, int size) {
-//   for (int i = 0; i < size; i++) {
-//     if (result4[i] != expected_output4[i]) {
-//       return 0;  // The arrays are not equal
-//     }
-//   }
-//   return 1;  // The arrays are equal
-// }
-
 int main() {
   // +++Test Case 1: sub bytes+++
   unsigned char test_block1[16] = {25,  160, 154, 233, 61,  244, 198, 248,
@@ -137,12 +126,6 @@ int main() {
 
   printf("Expected output:\n");
   print_block(expected_output4, 176);
-
-  // if (areCharArraysEqual(result4, expected_output4, size)) {
-  //   printf("test case 4 pass:result4 and expected_output4 match.\n");
-  // } else {
-  //   printf("test case 4 fail: result4 and expected_output4 do not match.\n");
-  // }
 
   if (memcmp(result4, expected_output4, size) == 0) {
     printf("test case 4 pass:result4 and expected_output4 match.\n");
