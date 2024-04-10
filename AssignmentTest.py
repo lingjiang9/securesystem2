@@ -19,42 +19,42 @@ class FinalUnitTest(unittest.TestCase):
         self.aes = AES(b'\x00' * 16)
 
 
-    # def test_encryption(self):
-    #     for _ in range(2): 
+    def test_encryption(self):
+        for _ in range(3): 
 
-    #      # Python test
-    #       message = [random.randint(0, 255) for _ in range(16)]
-    #       print(f"Message in byte: {message}")
-    #       key = [random.randint(0, 255) for _ in range(16)]
-    #       print(f"Key in byte: {key}")
-    #       ciphertext_python= AES(bytes(key)).encrypt_block(bytes(message))
-    #       hex_ciphertext_python = ciphertext_python.hex()
-    #       print(f"Ciphertext in hexadecimal in python: {hex_ciphertext_python}")
+         # Python test
+          message = [random.randint(0, 255) for _ in range(16)]
+          print(f"Message in byte: {message}")
+          key = [random.randint(0, 255) for _ in range(16)]
+          print(f"Key in byte: {key}")
+          ciphertext_python= AES(bytes(key)).encrypt_block(bytes(message))
+          hex_ciphertext_python = ciphertext_python.hex()
+          print(f"Ciphertext in hexadecimal in python: {hex_ciphertext_python}")
 
-    #      # C test
-    #       byte_message = bytes(message)
-    #       byte_key= bytes(key)
+         # C test
+          byte_message = bytes(message)
+          byte_key= bytes(key)
 
-    #       message_buffer = ctypes.create_string_buffer(byte_message)
-    #       key_buffer = ctypes.create_string_buffer(byte_key)
+          message_buffer = ctypes.create_string_buffer(byte_message)
+          key_buffer = ctypes.create_string_buffer(byte_key)
 
-    #     # Define the return type of the AES encryption function
-    #       rijndael.aes_encrypt_block.restype = ctypes.POINTER(ctypes.c_char * 16)
+        # Define the return type of the AES encryption function
+          rijndael.aes_encrypt_block.restype = ctypes.POINTER(ctypes.c_char * 16)
         
-    #     # Call the AES encryption function and get the result
-    #       ciphertext_c =ctypes.string_at(rijndael.aes_encrypt_block(message_buffer, key_buffer), 16)
+        # Call the AES encryption function and get the result
+          ciphertext_c =ctypes.string_at(rijndael.aes_encrypt_block(message_buffer, key_buffer), 16)
 
-    #    # Convert to a hexadecimal string
-    #       hex_ciphertext_c = ciphertext_c.hex()
+       # Convert to a hexadecimal string
+          hex_ciphertext_c = ciphertext_c.hex()
           
 
-    #     # Compare the ciphertext(in hexadecimal) in C and python
-    #       self.assertEqual(hex_ciphertext_python, hex_ciphertext_c)
-    #       print(f"Ciphertext(hexadecimal)\nIn Python: {hex_ciphertext_python}\nIn C: {hex_ciphertext_c} \nTHEY MATCH YAY !!")
+        # Compare the ciphertext(in hexadecimal) in C and python
+          self.assertEqual(hex_ciphertext_python, hex_ciphertext_c)
+          print(f"Ciphertext(hexadecimal)\nIn Python: {hex_ciphertext_python}\nIn C: {hex_ciphertext_c} \nTHEY MATCH YAY !!")
 
 
     def test_decryption(self):
-        for _ in range(2): 
+        for _ in range(3): 
 
          # Python test
           message = [random.randint(0, 255) for _ in range(16)]

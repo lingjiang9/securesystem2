@@ -4,3 +4,6 @@
 [submodule "python-aes"]
 	path = python-aes
 	url = https://github.com/boppreh/aes.git
+[submodule "submodule-aes"]
+	path = submodule-aes
+	url = https://github.com/boppreh/aes.git
