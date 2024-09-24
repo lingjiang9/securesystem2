@@ -1,4 +1,4 @@
-This is an AES-128 assignment for module Secure Systems Development, implemented in C.Results have been tested against the NIST standard (http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf),Appendix B – Cipher Example page 33-34. 
+This is an AES-128 assignment for module Secure Systems Development, implemented in C.Results have been tested against the NIST standard (http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf), Appendix B – Cipher Example page 33-34. 
 
 What is included:
 
